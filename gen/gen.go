@@ -64,24 +64,47 @@ type Config struct {
 }
 
 // An Enum defines an enumeration type.
+//
+// The generated type for an enumeration is a struct with an unexported pointer
+// to the string representation of the enumerator. This representation allows
+// cheap pointer comparisons, and users of the type outside the package cannot
+// create new non-zero values of the type. The zero value is explicitly defined
+// as the "unknown" value for an enumeration.
 type Enum struct {
 	Type   string   // enumeration type name (required)
 	Values []*Value // the enumeration values (required)
 
-	// Optional settings.
+	// If set, this prefix is prepended to each enumerator's variable name.
+	// Otherwise, the variable name matches the Name field of the value.
+	Prefix string
 
-	Prefix string // prefix for enumerator names
-	Doc    string // documentation for the enumeration type
-	Zero   string // define a zero enumerator with this name
-	ValDoc string `yaml:"val-doc"` // aggregate documentation for the values
+	// If set, this text is added as a doc comment for the enumeration.
+	// Multiple lines are OK. The text should not contain comment markers.
+	Doc string
+
+	// If set, a variable is defined for the zero value with this name.
+	// Typically a name like "Unknown" or "Invalid" makes sense.
+	// Otherwise, no variable is defined for the zero value; the caller can
+	// still construct a zero value explicitly if needed.
+	Zero string
+
+	// If set, this text is inserted at the top of the var block in the
+	// generated code for the enumerator values.
+	ValDoc string `yaml:"val-doc"`
 }
 
 // A Value defines a single enumerator.
 type Value struct {
 	Name string // enumerator name (required)
 
-	Doc  string // documentation for the enumerator
-	Text string // string text for the enumerator
+	// If set, this text is added as a doc comment for the enumerator value.  If
+	// it is a single line, it is added as a line comment; otherwise it is
+	// placed before the enumerator. The text should not contain comment markers.
+	Doc string
+
+	// If set, this text is used as the string representation of the value.
+	// Otherwise, the Name field is used.
+	Text string
 }
 
 // LoadConfig reads and parses a YAML configuration from path.

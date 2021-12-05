@@ -22,5 +22,5 @@ go run "$tool" -config "$yaml" -output enums.go
 echo "
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-var GeneratorHash = \"$hash\"" >> enums.go
+const GeneratorHash = \"$hash\"" >> enums.go
 
