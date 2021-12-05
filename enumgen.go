@@ -1,5 +1,12 @@
 // Program enumgen generates Go enumeration types. It is intended for use with
 // the "go generate" tool.
+//
+// The generator reads a configuration file in YAML format (see gen.Config).
+// To generate types, add:
+//
+//    //go:generate -command enumgen go run github.com/creachadair/enumgen@latest
+//    //go:generate enumgen -config enums.yml -output generated.go
+//
 package main
 
 import (
