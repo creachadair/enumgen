@@ -1,0 +1,20 @@
+# Test enumerations for the gen package.
+#
+# If you edit these settings, you may need to update the tests.
+package: testdata
+enum:
+  - type: E1
+    values:
+      - name: A
+        text: alpha
+      - name: B
+        text: bravo
+      - name: C
+        # text not set, use default
+
+  - type: E2
+    zero: Invalid
+    prefix: "E2_"
+    values:
+      - name: A
+      - name: B

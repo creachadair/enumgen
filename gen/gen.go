@@ -37,7 +37,7 @@
 //        prefix: "x"     # (optional) prefix to append to each enumerator name
 //        zero: "Bad"     # (optional) name of zero enumerator
 //        doc: "text"     # (optional) documentation comment for the enum type
-//        val-doc: "text" # (optional) aggregatge documentation for the values
+//        val-doc: "text" # (optional) aggregate documentation for the values
 //        values:
 //          - name: "A"   # the name of the first enumerator (required)
 //            doc: "text" # (optional) documentation for this enumerator
@@ -111,18 +111,35 @@ func (c *Config) checkValid() error {
 	if len(c.Enum) == 0 {
 		return errors.New("no enumerations defined")
 	}
+	enumSeen := make(map[string]bool)
+	valueSeen := make(map[string]string)
 	for i, e := range c.Enum {
 		if e.Type == "" {
 			return fmt.Errorf("enum %d: type name not defined", i+1)
+		} else if enumSeen[e.Type] {
+			return fmt.Errorf("enum %d: duplicate type name %q", i+1, e.Type)
 		}
+		enumSeen[e.Type] = true
 		if len(e.Values) == 0 {
 			return fmt.Errorf("enum %d: no enumerators defined", i+1)
 		}
+		if zero := e.Prefix + e.Zero; zero != "" {
+			if valueSeen[zero] != "" {
+				return fmt.Errorf("enum %q default %q duplicated in %q",
+					e.Type, zero, valueSeen[zero])
+			}
+			valueSeen[zero] = e.Type
+		}
 		for j, v := range e.Values {
 			if v.Name == "" {
-				return fmt.Errorf("enum %d value %d: name not defined", i+1, j+1)
+				return fmt.Errorf("enum %q value %d: name not defined", e.Type, j+1)
 			} else if e.Zero != "" && v.Name == e.Zero {
-				return fmt.Errorf("enum %d value %d: name %q conflicts with default", i+1, j+1, v.Name)
+				return fmt.Errorf("enum %q value %d: name %q conflicts with default", e.Type, j+1, v.Name)
+			} else if full := e.Prefix + v.Name; valueSeen[full] != "" {
+				return fmt.Errorf("enum %q value %d: name %q duplicated in %q",
+					e.Type, j+1, full, valueSeen[full])
+			} else {
+				valueSeen[full] = e.Type
 			}
 		}
 	}
