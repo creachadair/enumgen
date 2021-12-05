@@ -3,6 +3,7 @@ package gen_test
 import (
 	"bytes"
 	"crypto/sha256"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -74,6 +75,29 @@ func TestEnums(t *testing.T) {
 		check(t, testdata.E2_Invalid, false, "<invalid>")
 		check(t, testdata.E2_A, true, "A")
 		check(t, testdata.E2_B, true, "B")
+	})
+
+	t.Run("E3", func(t *testing.T) {
+		var target testdata.E3
+		check(t, target, false, "<invalid>")
+
+		var _ flag.Value = &target
+
+		if err := target.Set("foo"); err != nil {
+			t.Errorf("Set foo: %v", err)
+		} else if target != testdata.X {
+			t.Errorf("Set foo: got %v, want %v", target, testdata.X)
+		}
+		if err := target.Set("bar"); err != nil {
+			t.Errorf("Set bar: %v", err)
+		} else if target != testdata.Y {
+			t.Errorf("Set bar: got %v, want %v", target, testdata.Y)
+		}
+		if err := target.Set("baz"); err == nil {
+			t.Error("Set baz did not report an error")
+		} else if target != testdata.Y {
+			t.Errorf("After set baz: got %v, want %v", target, testdata.Y)
+		}
 	})
 }
 

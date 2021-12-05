@@ -18,3 +18,11 @@ enum:
     values:
       - name: A
       - name: B
+
+  - type: E3
+    flag-value: true
+    values:
+      - name: X
+        text: foo
+      - name: Y
+        text: bar

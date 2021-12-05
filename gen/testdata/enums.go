@@ -2,6 +2,8 @@
 
 package testdata
 
+import "fmt"
+
 type E1 struct{ *string }
 
 // Enum returns the name of the enumeration type for E1.
@@ -50,6 +52,41 @@ var (
 	E2_B       = E2{&_str_E2[1]}
 )
 
+type E3 struct{ *string }
+
+// Enum returns the name of the enumeration type for E3.
+func (E3) Enum() string { return "E3" }
+
+// String returns the string representation of E3 v.
+func (v E3) String() string {
+	if v.string == nil {
+		return "<invalid>"
+	}
+	return *v.string
+}
+
+// Valid reports whether v is a valid E3 value.
+func (v E3) Valid() bool { return v.string != nil }
+
+// Set implements part of the flag.Value interface for E3.
+// A value must equal the string representation of an enumerator.
+func (v *E3) Set(s string) error {
+	for i, opt := range _str_E3 {
+		if opt == s {
+			v.string = &_str_E3[i]
+			return nil
+		}
+	}
+	return fmt.Errorf("invalid value for E3: %q", s)
+}
+
+var (
+	_str_E3 = []string{"foo", "bar"}
+
+	X = E3{&_str_E3[0]}
+	Y = E3{&_str_E3[1]}
+)
+
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "e7d855eb2381e8d656b4e3dd102228087ae30d1c1180ebfec1c99f0bf5736d96"
+const GeneratorHash = "ed691f6c132935a60722ed6081011fa471846e22abfcaccead0fcc64c3d8c29c"
