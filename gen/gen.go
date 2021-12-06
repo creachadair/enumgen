@@ -6,9 +6,9 @@
 // Type Structure
 //
 // The generated type is a struct containing an unexported string pointer.
-// Values of the type can be compared for equality by value. The zero value
-// represents an unknown (invalid) enumerator; the Valid method reports whether
-// an enumerator is valid (i.e., non-zero).
+// Enumerators of the type can be compared for equality by value, and can be
+// used as map keys. The zero value represents an unknown (invalid) enumerator;
+// the Valid method reports whether an enumerator is valid (i.e., non-zero).
 //
 // The String method returns a string representation for each enumerator, which
 // defaults to the enumerator's base name.  The Enum method returns the name of

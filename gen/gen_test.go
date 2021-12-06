@@ -77,6 +77,23 @@ func TestEnums(t *testing.T) {
 		check(t, testdata.E2_B, true, "B")
 	})
 
+	t.Run("E2Map", func(t *testing.T) {
+		// Verify that enumerators work as map keys.
+		m := map[testdata.E2]bool{
+			testdata.E2_Invalid: true,
+			testdata.E2_A:       true,
+		}
+		if !m[testdata.E2_Invalid] {
+			t.Error("Invalid missing")
+		}
+		if !m[testdata.E2_A] {
+			t.Error("A missing")
+		}
+		if m[testdata.E2_B] {
+			t.Error("B found")
+		}
+	})
+
 	t.Run("E3", func(t *testing.T) {
 		var target testdata.E3
 		check(t, target, false, "<invalid>")

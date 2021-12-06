@@ -89,4 +89,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "ed691f6c132935a60722ed6081011fa471846e22abfcaccead0fcc64c3d8c29c"
+const GeneratorHash = "e6052ce77bf613bc5c50d33818db8ff6ae6a92f8202202bed2b8ae59205f698d"

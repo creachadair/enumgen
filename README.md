@@ -21,9 +21,9 @@ To generate types, add a rule like this:
 
 The generated type for an enumeration is a struct with an unexported pointer to
 the string representation of the enumerator. This representation allows cheap
-value comparisons, and users of the type outside the package cannot create new
-non-zero values of the type. The zero value is explicitly defined as the
-"unknown" value for an enumeration.
+value comparisons, enumerators can be used as map keys, and users of the type
+outside the package cannot create new non-zero values of the type. The zero
+value is explicitly defined as the "unknown" value for an enumeration.
 
 The generated type exports three methods:
 
