@@ -3,6 +3,8 @@ package gen_test
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -94,7 +96,7 @@ func TestEnums(t *testing.T) {
 		}
 	})
 
-	t.Run("E3", func(t *testing.T) {
+	t.Run("E3Flag", func(t *testing.T) {
 		var target testdata.E3
 		check(t, target, false, "<invalid>")
 
@@ -115,6 +117,64 @@ func TestEnums(t *testing.T) {
 		} else if target != testdata.Y {
 			t.Errorf("After set baz: got %v, want %v", target, testdata.Y)
 		}
+	})
+
+	t.Run("E3Text", func(t *testing.T) {
+		var _ encoding.TextMarshaler = testdata.E3{}
+		var _ encoding.TextUnmarshaler = (*testdata.E3)(nil)
+
+		t.Run("Good", func(t *testing.T) {
+			var target testdata.E3
+
+			bits, err := json.Marshal(testdata.X)
+			if err != nil {
+				t.Fatalf("Marshal %v failed: %v", testdata.X, err)
+			}
+
+			if err := json.Unmarshal(bits, &target); err != nil {
+				t.Fatalf("Unmarshal failed: %v", err)
+			}
+
+			want := testdata.X.String()
+			if got := target.String(); got != want {
+				t.Errorf("Decoded value: got %q, want %q", got, want)
+			}
+		})
+
+		t.Run("Zero", func(t *testing.T) {
+			var target testdata.E3
+
+			// An empty string should decode to the zero enumerator.
+			if err := json.Unmarshal([]byte(`""`), &target); err != nil {
+				t.Fatalf("Unmarshal failed: %v", err)
+			}
+			if target.Valid() {
+				t.Error("Decoded empty incorrectly reports valid")
+			}
+
+			// The <invalid> label should decode to the zero enumerator.
+			bits, err := json.Marshal(testdata.E3{})
+			if err != nil {
+				t.Fatalf("Marshal %v failed: %v", testdata.E3{}, err)
+			}
+			if err := json.Unmarshal(bits, &target); err != nil {
+				t.Fatalf("Unmarshal failed; %v", err)
+			}
+			if target.Valid() {
+				t.Errorf("Decoded %s incorrectly reports valid", string(bits))
+			}
+		})
+
+		t.Run("Bad", func(t *testing.T) {
+			var target testdata.E3
+
+			const bad = "nonesuch"
+			if err := json.Unmarshal([]byte(`"`+bad+`"`), &target); err == nil {
+				t.Errorf("Unmarshal: got %v, want error", target)
+			} else {
+				t.Logf("Decoding %q correctly failed: %v", bad, err)
+			}
+		})
 	})
 }
 

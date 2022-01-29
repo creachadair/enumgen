@@ -80,6 +80,29 @@ func (v *E3) Set(s string) error {
 	return fmt.Errorf("invalid value for E3: %q", s)
 }
 
+// MarshalText encodes the value of the E3 enumerator as text.
+// It satisfies the encoding.TextMarshaler interface.
+func (v E3) MarshalText() ([]byte, error) { return []byte(v.String()), nil }
+
+// UnarshalText decodes the value of the E3 enumerator from a string.
+// It reports an error if data does not encode a known enumerator.
+// An empty slice decodes to the invalid (zero) value.
+// This method satisfies the encoding.TextUnmarshaler interface.
+func (v *E3) UnmarshalText(data []byte) error {
+	text := string(data)
+	if text == "" || text == (E3{}).String() {
+		v.string = nil
+		return nil
+	}
+	for i, opt := range _str_E3 {
+		if opt == text {
+			v.string = &_str_E3[i]
+			return nil
+		}
+	}
+	return fmt.Errorf("invalid value for E3: %q", text)
+}
+
 var (
 	_str_E3 = []string{"foo", "bar"}
 
@@ -89,4 +112,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "e6052ce77bf613bc5c50d33818db8ff6ae6a92f8202202bed2b8ae59205f698d"
+const GeneratorHash = "3ec432985dc76d93b0a61baacc3a12c0dc54824f74f8be87163528fd86b1d6ba"
