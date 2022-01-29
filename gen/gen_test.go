@@ -38,7 +38,7 @@ func checkGenerated(t *testing.T) {
 	// Verify that the generator package and the testdata config match the hash
 	// embedded in the generated test data.
 	h := sha256.New()
-	for _, path := range []string{"gen.go", "testdata/gentest.yml"} {
+	for _, path := range []string{"gen.go", "testdata/gentest.yml", "testdata/testdata.go"} {
 		f, err := os.Open(path)
 		if err != nil {
 			t.Fatalf("Reading input: %v", err)
@@ -77,6 +77,14 @@ func TestEnums(t *testing.T) {
 		check(t, testdata.E2_Invalid, false, "<invalid>")
 		check(t, testdata.E2_A, true, "A")
 		check(t, testdata.E2_B, true, "B")
+	})
+
+	t.Run("E4", func(t *testing.T) {
+		var zero testdata.E4
+		check(t, zero, false, "<invalid>")
+		check(t, testdata.E4_P, true, "P")
+		check(t, testdata.E4_D, true, "D")
+		check(t, testdata.E4_Q, true, "Q")
 	})
 
 	t.Run("E2Map", func(t *testing.T) {
