@@ -9,12 +9,46 @@ Program `enumgen` is a command-line tool to generate Go enumeration types.
 This gool is intended for use with the "[go generate][gogen]" command.
 
 The generator reads a configuration file in YAML format (see [`gen.Config`][gc]).
-To generate types, add a rule like this:
+To generate types from a separate config file, add a rule like this:
 
 ```go
 //go:generate -command enumgen go run github.com/creachadair/enumgen@latest
 //go:generate enumgen -config enums.yml -output generated.go
 ```
+
+Alternatively, you may embed the YAML config inside a Go source file (detected
+by a name ending in ".go"), in a comment group prefixed by `enumgen:config`:
+
+```go
+//go:generate enumgen -config thisfile.go -output generated.go
+
+// Note there may be no space before the annotation, and the annotation
+// must be the first line of its comment group.
+
+//enumgen:config
+/*
+# Inside this comment everything is YAML.
+# Probably I should be ashamed of myself for this.
+
+package: example
+enum:
+  - type: Color
+    doc: |
+      A Color is a source of joy for all who behold it.
+    flag-value: true
+    values:
+      - name: Red
+        text: fire-engine-red
+
+      - name: Green
+        text: scummy-green
+
+      - name: Blue
+        text: azure-sky-blue
+*/
+```
+
+If there are multiple such blocks in the file, only the first is considered.
 
 ## Type Structure
 
