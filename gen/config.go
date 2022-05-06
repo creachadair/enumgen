@@ -73,7 +73,11 @@ func ConfigFromSource(path string) (*Config, error) {
 	}
 	if len(configText) != 0 {
 		input := strings.NewReader(strings.Join(configText, "\n"))
-		return ParseConfig(input)
+		cfg, err := ParseConfig(input)
+		if err == nil && cfg.Package == "" {
+			cfg.Package = f.Name.Name
+		}
+		return cfg, err
 	}
 	return nil, fmt.Errorf("no config comment found in %q", path)
 }

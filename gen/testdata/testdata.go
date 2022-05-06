@@ -4,7 +4,7 @@ package testdata
 
 /*enumgen:config
 
-package: testdata
+# package testdata inferred from file
 enum:
   - type: E4
     doc: An enumeration defined in a Go file.
