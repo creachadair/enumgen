@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/creachadair/mds/mapset"
 	yaml "gopkg.in/yaml.v3"
 )
 
@@ -99,15 +100,15 @@ func (c *Config) checkValid() error {
 	if len(c.Enum) == 0 {
 		return errors.New("no enumerations defined")
 	}
-	enumSeen := make(map[string]bool)
+	enumSeen := mapset.New[string]()
 	valueSeen := make(map[string]string)
 	for i, e := range c.Enum {
 		if e.Type == "" {
 			return fmt.Errorf("enum %d: type name not defined", i+1)
-		} else if enumSeen[e.Type] {
+		} else if enumSeen.Has(e.Type) {
 			return fmt.Errorf("enum %d: duplicate type name %q", i+1, e.Type)
 		}
-		enumSeen[e.Type] = true
+		enumSeen.Add(e.Type)
 		if len(e.Values) == 0 {
 			return fmt.Errorf("enum %d: no enumerators defined", i+1)
 		}
