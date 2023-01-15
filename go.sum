@@ -1,5 +1,5 @@
-github.com/creachadair/mds v0.0.0-20230110070022-49274a5afeea h1:O9TsrDdDlvyZhh2x9Igdkn7c3gWoOGzxYaEI9MjQGr0=
-github.com/creachadair/mds v0.0.0-20230110070022-49274a5afeea/go.mod h1:caBACU+n1Q/rZ252FTzfnG0/H+ZUi+UnIQtEOraMv/g=
+github.com/creachadair/mds v0.0.0-20230112232013-549c3f4fe455 h1:RZDQcXw5WKyu+R7se/NUDQodBxrXOuZWAm0miRdfMoU=
+github.com/creachadair/mds v0.0.0-20230112232013-549c3f4fe455/go.mod h1:caBACU+n1Q/rZ252FTzfnG0/H+ZUi+UnIQtEOraMv/g=
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
