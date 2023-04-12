@@ -1,6 +1,7 @@
 package gen
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"go/parser"
@@ -37,7 +38,7 @@ func ConfigFromFile(path string) (*Config, error) {
 }
 
 // ConfigFromSource reads and parses the Go file specified by path, and
-// extracts a YAML config from the first comment block tagged enumgen:config
+// extracts a YAML config from each first comment block tagged enumgen:type
 // found in the file.  An error results if no such comment is found.
 func ConfigFromSource(path string) (*Config, error) {
 	const flags = parser.ParseComments | parser.SkipObjectResolution
@@ -46,41 +47,52 @@ func ConfigFromSource(path string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	var configText []string
+
+	type enumBlock struct {
+		name string
+		text []string
+	}
+	var enumBlocks []enumBlock
 	for _, cg := range f.Comments {
 		first := cg.List[0] // guaranteed to exist
 
-		if strings.HasPrefix(first.Text, "/*enumgen:config") {
+		if rest, ok := strings.CutPrefix(first.Text, "/*enumgen:type"); ok {
 			// Found a tagged comment group beginning with a block comment.
-			clean := strings.TrimSpace(strings.TrimSuffix(first.Text, "*/"))
-			lines := strings.Split(clean, "\n")
-			configText = append(configText, lines[1:]...) // discard the tag
-		} else if !strings.HasPrefix(first.Text, "//enumgen:config") {
-			continue
+			name, rest, _ := strings.Cut(rest, "\n")
+			enumBlocks = append(enumBlocks, enumBlock{
+				name: strings.TrimSpace(name),
+				text: []string{cleanMulti(rest)},
+			})
+		} else if rest, ok := strings.CutPrefix(first.Text, "//enumgen:type"); ok {
+			enumBlocks = append(enumBlocks, enumBlock{
+				name: strings.TrimSpace(rest), // must be validated later
+			})
+			// lines are filled below
+		} else {
+			continue // not a relevant comment block
 		}
 
-		// Run through the rest of the group accumulating comments.  Skip the
-		// first one, which was either the tag comment, or has already been added
-		// to the collection.
+		// Run through the rest of the group accumulating comments.
+		// Reaching this point, the latest block already has the name extracted.
+		cur := &enumBlocks[len(enumBlocks)-1]
 		for _, com := range cg.List[1:] {
-			if strings.HasPrefix(com.Text, "//") {
-				configText = append(configText, strings.TrimPrefix(com.Text, "// "))
-			} else {
-				clean := strings.TrimSuffix(strings.TrimPrefix(com.Text, "/*"), "*/")
-				configText = append(configText, strings.TrimSpace(clean))
+			if rest, ok := strings.CutPrefix(com.Text, "//"); ok {
+				cur.text = append(cur.text, cleanSingle(rest))
+			} else if rest, ok := strings.CutPrefix(com.Text, "/*"); ok {
+				cur.text = append(cur.text, cleanMulti(rest))
 			}
 		}
-		break
 	}
-	if len(configText) != 0 {
-		input := strings.NewReader(strings.Join(configText, "\n"))
-		cfg, err := ParseConfig(input)
-		if err == nil && cfg.Package == "" {
-			cfg.Package = f.Name.Name
-		}
-		return cfg, err
+	var buf bytes.Buffer
+	fmt.Fprintf(&buf, "package: %s\nenum:\n", f.Name.Name)
+	for _, enum := range enumBlocks {
+		fmt.Fprintf(&buf, "- type: %s\n", enum.name)
+		fmt.Fprintln(&buf, indentLines("  ", enum.text))
 	}
-	return nil, fmt.Errorf("no config comment found in %q", path)
+	if buf.Len() == 0 {
+		return nil, fmt.Errorf("no config comment found in %q", path)
+	}
+	return ParseConfig(&buf)
 }
 
 // ParseConfig parses a YAML configuration text from r.
@@ -133,4 +145,23 @@ func (c *Config) checkValid() error {
 		}
 	}
 	return nil
+}
+
+func indentLines(pfx string, text []string) string {
+	var lines []string
+	for _, t := range text {
+		lines = append(lines, strings.Split(strings.TrimSuffix(t, "\n"), "\n")...)
+	}
+	for i := range lines {
+		lines[i] = pfx + lines[i]
+	}
+	return strings.Join(lines, "\n")
+}
+
+func cleanSingle(s string) string {
+	return strings.TrimSuffix(strings.TrimPrefix(s, " "), "\n")
+}
+
+func cleanMulti(s string) string {
+	return strings.TrimSpace(strings.TrimSuffix(s, "*/"))
 }
