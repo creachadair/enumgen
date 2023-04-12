@@ -6,7 +6,7 @@ Program `enumgen` is a command-line tool to generate Go enumeration types.
 
 ## Usage
 
-This gool is intended for use with the "[go generate][gogen]" command.
+This tool is intended for use with the "[go generate][gogen]" command.
 
 The generator reads a configuration file in YAML format (see [`gen.Config`][gc]).
 To generate types from a separate config file, add a rule like this:
