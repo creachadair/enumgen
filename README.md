@@ -16,8 +16,9 @@ To generate types from a separate config file, add a rule like this:
 //go:generate enumgen -config enums.yml -output generated.go
 ```
 
-Alternatively, you may embed the YAML config inside a Go source file (detected
-by a name ending in ".go"), in a comment group prefixed by `enumgen:config`:
+Alternatively, you may embed the YAML definition of a [`gen.Enum`][ge] inside a
+Go source file (detected by a name ending in ".go"), in a comment group
+prefixed by `enumgen:type`:
 
 ```go
 //go:generate enumgen -config thisfile.go -output generated.go
@@ -25,30 +26,29 @@ by a name ending in ".go"), in a comment group prefixed by `enumgen:config`:
 // Note there may be no space before the annotation, and the annotation
 // must be the first line of its comment group.
 
-//enumgen:config
-/*
+/*enumgen:type Color
+
 # Inside this comment everything is YAML.
 # Probably I should be ashamed of myself for this.
 
-package: example
-enum:
-  - type: Color
-    doc: |
-      A Color is a source of joy for all who behold it.
-    flag-value: true
-    values:
-      - name: Red
-        text: fire-engine-red
+doc: |
+  A Color is a source of joy for all who behold it.
+flag-value: true
+values:
+  - name: Red
+    text: fire-engine-red
 
-      - name: Green
-        text: scummy-green
+  - name: Green
+    text: scummy-green
 
-      - name: Blue
-        text: azure-sky-blue
+  - name: Blue
+    text: azure-sky-blue
 */
 ```
 
-If there are multiple such blocks in the file, only the first is considered.
+There may be multiple such blocks in a file; each defines a single enumeration.
+The text after `enumgen:type` becomes the name of the type; the content of the
+block must be a single [`gen.Enum`][ge] value.
 
 ## Type Structure
 
@@ -88,3 +88,4 @@ single package. The general structure of a config in YAML follows this example
 
 [gogen]: https://go.dev/blog/generate
 [gc]: https://godoc.org/github.com/creachadair/enumgen/gen#Config
+[ge]: https://godoc.org/github.com/creachadair/enumgen/gen#Enum

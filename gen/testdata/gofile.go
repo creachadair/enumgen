@@ -2,6 +2,8 @@
 
 package testdata
 
+import "fmt"
+
 // An enumeration defined in a Go file.
 type E4 struct{ *string }
 
@@ -25,4 +27,41 @@ var (
 	E4_P = E4{&_str_E4[0]}
 	E4_D = E4{&_str_E4[1]}
 	E4_Q = E4{&_str_E4[2]}
+)
+
+// A Color is a source of joy for all who behold it.
+type Color struct{ *string }
+
+// Enum returns the name of the enumeration type for Color.
+func (Color) Enum() string { return "Color" }
+
+// String returns the string representation of Color v.
+func (v Color) String() string {
+	if v.string == nil {
+		return "<invalid>"
+	}
+	return *v.string
+}
+
+// Valid reports whether v is a valid Color value.
+func (v Color) Valid() bool { return v.string != nil }
+
+// Set implements part of the flag.Value interface for Color.
+// A value must equal the string representation of an enumerator.
+func (v *Color) Set(s string) error {
+	for i, opt := range _str_Color {
+		if opt == s {
+			v.string = &_str_Color[i]
+			return nil
+		}
+	}
+	return fmt.Errorf("invalid value for Color: %q", s)
+}
+
+var (
+	_str_Color = []string{"fire-engine-red", "scummy-green", "azure-sky-blue"}
+
+	Red   = Color{&_str_Color[0]}
+	Green = Color{&_str_Color[1]}
+	Blue  = Color{&_str_Color[2]}
 )
