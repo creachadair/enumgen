@@ -184,6 +184,15 @@ func TestEnums(t *testing.T) {
 			}
 		})
 	})
+
+	t.Run("ColorFlag", func(t *testing.T) {
+		const redText = "fire-engine-red"
+		color := testdata.Red
+		if got := color.String(); got != redText {
+			t.Errorf("Red: got %q, want %q", got, redText)
+		}
+		var _ flag.Value = &color
+	})
 }
 
 func TestErrors(t *testing.T) {
