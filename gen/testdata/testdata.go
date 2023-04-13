@@ -20,9 +20,11 @@ values:
 // flag-value: true
 // values:
 //   - name: Red
+//     doc: "{name} is the colour of my true love's eyes."
 //     text: fire-engine-red
 //
 //   - name: Green
+//     doc: "{name} is the colour of my true love's blood."
 //     text: scummy-green
 //
 //   - name: Blue

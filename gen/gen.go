@@ -103,6 +103,8 @@ type Value struct {
 	// If set, this text is added as a doc comment for the enumerator value.  If
 	// it is a single line, it is added as a line comment; otherwise it is
 	// placed before the enumerator. The text should not contain comment markers.
+	// The placeholder {name} will be replaced with the final generated name of
+	// the enumeratof.
 	Doc string
 
 	// If set, this text is used as the string representation of the value.
@@ -250,12 +252,13 @@ func (v *%[1]s) UnmarshalText(data []byte) error {
 		fmt.Fprintf(w, "\t%s%s = %s{}\n", e.Prefix, e.Zero, e.Type)
 	}
 	for i, v := range e.Values {
-		doc := formatDoc(v.Doc)
+		fullName := e.Prefix + v.Name
+		doc := formatDoc(injectName(v.Doc, fullName))
 		multiline := strings.Contains(doc, "\n")
 		if doc != "" && multiline {
 			fmt.Fprintf(w, "\t%s\n", doc)
 		}
-		fmt.Fprintf(w, "\t%s%s = %s{&%s[%d]}", e.Prefix, v.Name, e.Type, strs, i)
+		fmt.Fprintf(w, "\t%s = %s{&%s[%d]}", fullName, e.Type, strs, i)
 		if doc != "" {
 			if multiline {
 				fmt.Fprintln(w) // extra space after documented enumerator
@@ -280,4 +283,9 @@ func formatDoc(s string) string {
 		lines[i] = "// " + strings.TrimSpace(line)
 	}
 	return strings.Join(lines, "\n")
+}
+
+// injectName replaces "{name}" markers in s with the specified name.
+func injectName(s, name string) string {
+	return strings.ReplaceAll(s, "{name}", name)
 }

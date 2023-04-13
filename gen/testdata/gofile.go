@@ -61,7 +61,7 @@ func (v *Color) Set(s string) error {
 var (
 	_str_Color = []string{"fire-engine-red", "scummy-green", "azure-sky-blue"}
 
-	Red   = Color{&_str_Color[0]}
-	Green = Color{&_str_Color[1]}
+	Red   = Color{&_str_Color[0]} // Red is the colour of my true love's eyes.
+	Green = Color{&_str_Color[1]} // Green is the colour of my true love's blood.
 	Blue  = Color{&_str_Color[2]}
 )
