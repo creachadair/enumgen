@@ -104,7 +104,7 @@ type Value struct {
 	// it is a single line, it is added as a line comment; otherwise it is
 	// placed before the enumerator. The text should not contain comment markers.
 	// The placeholder {name} will be replaced with the final generated name of
-	// the enumeratof.
+	// the enumerator.
 	Doc string
 
 	// If set, this text is used as the string representation of the value.
