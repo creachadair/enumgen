@@ -52,8 +52,8 @@ block must be a single [`gen.Enum`][ge] value.
 
 ## Type Structure
 
-The generated type for an enumeration is a struct with an unexported pointer to
-the string representation of the enumerator. This representation allows cheap
+The generated type for an enumeration is a struct with an unexported small
+integer index to the string representation of the enumerator. This allows cheap
 value comparisons, enumerators can be used as map keys, and users of the type
 outside the package cannot create new non-zero values of the type. The zero
 value is explicitly defined as the "unknown" value for an enumeration.

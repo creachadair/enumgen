@@ -5,53 +5,43 @@ package testdata
 import "fmt"
 
 // An enumeration defined in a Go file.
-type E4 struct{ *string }
+type E4 struct{ _E4 uint8 }
 
 // Enum returns the name of the enumeration type for E4.
 func (E4) Enum() string { return "E4" }
 
 // String returns the string representation of E4 v.
-func (v E4) String() string {
-	if v.string == nil {
-		return "<invalid>"
-	}
-	return *v.string
-}
+func (v E4) String() string { return _str_E4[v._E4] }
 
 // Valid reports whether v is a valid E4 value.
-func (v E4) Valid() bool { return v.string != nil }
+func (v E4) Valid() bool { return v._E4 != 0 }
 
 var (
-	_str_E4 = []string{"P", "D", "Q"}
+	_str_E4 = []string{"<invalid>", "P", "D", "Q"}
 
-	E4_P = E4{&_str_E4[0]}
-	E4_D = E4{&_str_E4[1]}
-	E4_Q = E4{&_str_E4[2]}
+	E4_P = E4{1}
+	E4_D = E4{2}
+	E4_Q = E4{3}
 )
 
 // A Color is a source of joy for all who behold it.
-type Color struct{ *string }
+type Color struct{ _Color uint8 }
 
 // Enum returns the name of the enumeration type for Color.
 func (Color) Enum() string { return "Color" }
 
 // String returns the string representation of Color v.
-func (v Color) String() string {
-	if v.string == nil {
-		return "<invalid>"
-	}
-	return *v.string
-}
+func (v Color) String() string { return _str_Color[v._Color] }
 
 // Valid reports whether v is a valid Color value.
-func (v Color) Valid() bool { return v.string != nil }
+func (v Color) Valid() bool { return v._Color != 0 }
 
 // Set implements part of the flag.Value interface for Color.
 // A value must equal the string representation of an enumerator.
 func (v *Color) Set(s string) error {
-	for i, opt := range _str_Color {
+	for i, opt := range _str_Color[1:] {
 		if opt == s {
-			v.string = &_str_Color[i]
+			v._Color = uint8(i + 1)
 			return nil
 		}
 	}
@@ -59,9 +49,9 @@ func (v *Color) Set(s string) error {
 }
 
 var (
-	_str_Color = []string{"fire-engine-red", "scummy-green", "azure-sky-blue"}
+	_str_Color = []string{"<invalid>", "fire-engine-red", "scummy-green", "azure-sky-blue"}
 
-	Red   = Color{&_str_Color[0]} // Red is the colour of my true love's eyes.
-	Green = Color{&_str_Color[1]} // Green is the colour of my true love's blood.
-	Blue  = Color{&_str_Color[2]}
+	Red   = Color{1} // Red is the colour of my true love's eyes.
+	Green = Color{2} // Green is the colour of my true love's blood.
+	Blue  = Color{3}
 )

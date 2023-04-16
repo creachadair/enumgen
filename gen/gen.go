@@ -159,26 +159,11 @@ func (e *Enum) generate(w io.Writer) error {
 	if doc := formatDoc(e.Doc); doc != "" {
 		fmt.Fprintln(w, doc)
 	}
+	base := baseType(len(e.Values))
+	field := fmt.Sprintf("_%s", e.Type)
 
 	// Generate the enumeration type.
-	fmt.Fprintf(w, "type %s struct { *string }\n", e.Type)
-
-	// Generate the Enum, String, and Valid methods.
-	fmt.Fprintf(w, `
-// Enum returns the name of the enumeration type for %[1]s.
-func (%[1]s) Enum() string { return %[1]q }
-
-// String returns the string representation of %[1]s v.
-func (v %[1]s) String() string {
-   if v.string == nil {
-      return %[2]q
-   }
-   return *v.string
-}
-
-// Valid reports whether v is a valid %[1]s value.
-func (v %[1]s) Valid() bool { return v.string != nil }
-`, e.Type, "<invalid>")
+	fmt.Fprintf(w, "type %[1]s struct { %s %s }\n", e.Type, field, base)
 
 	// Extract the label strings for the defined enumerators.
 	labels := make([]string, len(e.Values))
@@ -191,21 +176,33 @@ func (v %[1]s) Valid() bool { return v.string != nil }
 	}
 	strs := fmt.Sprintf("_str_%s", e.Type)
 
+	// Generate the Enum, String, and Valid methods.
+	fmt.Fprintf(w, `
+// Enum returns the name of the enumeration type for %[1]s.
+func (%[1]s) Enum() string { return %[1]q }
+
+// String returns the string representation of %[1]s v.
+func (v %[1]s) String() string { return %[3]s[v.%[2]s] }
+
+// Valid reports whether v is a valid %[1]s value.
+func (v %[1]s) Valid() bool { return v.%[2]s != 0 }
+`, e.Type, field, strs)
+
 	// If requested, emit flag.Value methods.
 	if e.FlagValue {
 		fmt.Fprintf(w, `
 // Set implements part of the flag.Value interface for %[1]s.
 // A value must equal the string representation of an enumerator.
 func (v *%[1]s) Set(s string) error {
-   for i, opt := range %[2]s {
+   for i, opt := range %[3]s[1:] {
       if opt == s {
-         v.string = &%[2]s[i]
+         v.%[2]s = %[4]s(i+1)
          return nil
       }
    }
    return fmt.Errorf("invalid value for %[1]s: %%q", s)
 }
-`, e.Type, strs)
+`, e.Type, field, strs, base)
 	}
 
 	// If requested, emit text marshaling methods.
@@ -221,20 +218,20 @@ func (v %[1]s) MarshalText() ([]byte, error) { return []byte(v.String()), nil }
 // An empty slice decodes to the invalid (zero) value.
 // This method satisfies the encoding.TextUnmarshaler interface.
 func (v *%[1]s) UnmarshalText(data []byte) error {
+   *v = %[1]s{}
    text := string(data)
    if text == "" || text == (%[1]s{}).String() {
-      v.string = nil
       return nil
    }
-   for i, opt := range %[2]s {
+   for i, opt := range %[3]s[1:] {
       if opt == text {
-         v.string = &%[2]s[i]
+         v.%[2]s = %[4]s(i+1)
          return nil
       }
    }
    return fmt.Errorf("invalid value for %[1]s: %%q", text)
 }
-`, e.Type, strs)
+`, e.Type, field, strs, base)
 	}
 
 	// Generate the enumerators and string values.
@@ -242,14 +239,14 @@ func (v *%[1]s) UnmarshalText(data []byte) error {
 		fmt.Fprintln(w, doc)
 	}
 	fmt.Fprintln(w, "var (")
-	fmt.Fprintf(w, "\t%s = []string{", strs)
+	fmt.Fprintf(w, "\t%s = []string{%q,", strs, "<invalid>")
 	for _, label := range labels {
 		fmt.Fprintf(w, "%q,", label)
 	}
 	fmt.Fprint(w, "}\n\n")
 
 	if e.Zero != "" {
-		fmt.Fprintf(w, "\t%s%s = %s{}\n", e.Prefix, e.Zero, e.Type)
+		fmt.Fprintf(w, "\t%s%s = %s{0}\n", e.Prefix, e.Zero, e.Type)
 	}
 	for i, v := range e.Values {
 		fullName := e.Prefix + v.Name
@@ -258,7 +255,7 @@ func (v *%[1]s) UnmarshalText(data []byte) error {
 		if doc != "" && multiline {
 			fmt.Fprintf(w, "\t%s\n", doc)
 		}
-		fmt.Fprintf(w, "\t%s = %s{&%s[%d]}", fullName, e.Type, strs, i)
+		fmt.Fprintf(w, "\t%[1]s = %[2]s{%[3]d}", fullName, e.Type, i+1)
 		if doc != "" {
 			if multiline {
 				fmt.Fprintln(w) // extra space after documented enumerator
@@ -288,4 +285,19 @@ func formatDoc(s string) string {
 // injectName replaces "{name}" markers in s with the specified name.
 func injectName(s, name string) string {
 	return strings.ReplaceAll(s, "{name}", name)
+}
+
+// baseType returns the name of the smallest unsigned integer type wide enough
+// to represent n enumerations.
+func baseType(n int) string {
+	switch {
+	case n < 1<<8:
+		return "uint8"
+	case n < 1<<16:
+		return "uint16"
+	case n < 1<<32:
+		return "uint32" // unlikely
+	default:
+		return "uint64" // ridiculous
+	}
 }
