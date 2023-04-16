@@ -9,6 +9,9 @@ type E1 struct{ _E1 uint8 }
 // Enum returns the name of the enumeration type for E1.
 func (E1) Enum() string { return "E1" }
 
+// Index returns the ordinal index of E1 v.
+func (v E1) Index() int { return int(v._E1) }
+
 // String returns the string representation of E1 v.
 func (v E1) String() string { return _str_E1[v._E1] }
 
@@ -28,6 +31,9 @@ type E2 struct{ _E2 uint8 }
 // Enum returns the name of the enumeration type for E2.
 func (E2) Enum() string { return "E2" }
 
+// Index returns the ordinal index of E2 v.
+func (v E2) Index() int { return int(v._E2) }
+
 // String returns the string representation of E2 v.
 func (v E2) String() string { return _str_E2[v._E2] }
 
@@ -46,6 +52,9 @@ type E3 struct{ _E3 uint8 }
 
 // Enum returns the name of the enumeration type for E3.
 func (E3) Enum() string { return "E3" }
+
+// Index returns the ordinal index of E3 v.
+func (v E3) Index() int { return int(v._E3) }
 
 // String returns the string representation of E3 v.
 func (v E3) String() string { return _str_E3[v._E3] }
@@ -97,4 +106,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "b871c995ffb9c397380bfff2777c4a59d056604a737096553a64d2e5695a8a33"
+const GeneratorHash = "fe6a59c8158ac2187d5497400909008b831c65123db6c135e860843fb4d8fe37"

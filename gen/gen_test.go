@@ -18,6 +18,7 @@ import (
 
 type enumType interface {
 	Enum() string
+	Index() int
 	String() string
 	Valid() bool
 }
@@ -85,6 +86,15 @@ func TestEnums(t *testing.T) {
 		check(t, testdata.E4_P, true, "P")
 		check(t, testdata.E4_D, true, "D")
 		check(t, testdata.E4_Q, true, "Q")
+	})
+
+	t.Run("E1Index", func(t *testing.T) {
+		var zero testdata.E1
+		for i, e := range []testdata.E1{zero, testdata.A, testdata.B, testdata.C} {
+			if got := e.Index(); got != i {
+				t.Errorf("Index for %v: got %d, want %d", e, got, i)
+			}
+		}
 	})
 
 	t.Run("E2Map", func(t *testing.T) {
