@@ -62,6 +62,8 @@ The generated type exports three methods:
 
 - The `Enum` method returns the name of the generated type.
 
+- The `Index` method returns the ordinal index of the enumerator (in the order of declararion within the values list, 0 denotes the zero enumerator).
+
 - The `Valid` method reports whether an enumerator is valid (non-zero).
 
 - The `String` method returns a string representation for each enumerator,
