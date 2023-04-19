@@ -85,7 +85,7 @@ func (v E3) MarshalText() ([]byte, error) { return []byte(v.String()), nil }
 func (v *E3) UnmarshalText(data []byte) error {
 	*v = E3{}
 	text := string(data)
-	if text == "" || text == (E3{}).String() {
+	if text == "" || text == _str_E3[0] {
 		return nil
 	}
 	for i, opt := range _str_E3[1:] {
@@ -106,4 +106,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "4d615ac44627f42d2b7ba2e78c5f1385c984a285ce5bf141a54746045a941936"
+const GeneratorHash = "d1d9fd756cba835dfb44984ad1430b20507be2654bfae43b2ebc05d500518a22"

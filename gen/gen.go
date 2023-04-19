@@ -224,7 +224,7 @@ func (v %[1]s) MarshalText() ([]byte, error) { return []byte(v.String()), nil }
 func (v *%[1]s) UnmarshalText(data []byte) error {
    *v = %[1]s{}
    text := string(data)
-   if text == "" || text == (%[1]s{}).String() {
+   if text == "" || text == %[3]s[0] {
       return nil
    }
    for i, opt := range %[3]s[1:] {
