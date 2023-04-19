@@ -16,7 +16,7 @@ func (v E1) Index() int { return int(v._E1) }
 func (v E1) String() string { return _str_E1[v._E1] }
 
 // Valid reports whether v is a valid E1 value.
-func (v E1) Valid() bool { return v._E1 != 0 }
+func (v E1) Valid() bool { return v._E1 > 0 && int(v._E1) < len(_str_E1) }
 
 var (
 	_str_E1 = []string{"<invalid>", "alpha", "bravo", "C"}
@@ -38,7 +38,7 @@ func (v E2) Index() int { return int(v._E2) }
 func (v E2) String() string { return _str_E2[v._E2] }
 
 // Valid reports whether v is a valid E2 value.
-func (v E2) Valid() bool { return v._E2 != 0 }
+func (v E2) Valid() bool { return v._E2 > 0 && int(v._E2) < len(_str_E2) }
 
 var (
 	_str_E2 = []string{"<invalid>", "A", "B"}
@@ -60,7 +60,7 @@ func (v E3) Index() int { return int(v._E3) }
 func (v E3) String() string { return _str_E3[v._E3] }
 
 // Valid reports whether v is a valid E3 value.
-func (v E3) Valid() bool { return v._E3 != 0 }
+func (v E3) Valid() bool { return v._E3 > 0 && int(v._E3) < len(_str_E3) }
 
 // Set implements part of the flag.Value interface for E3.
 // A value must equal the string representation of an enumerator.
@@ -106,4 +106,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "d1d9fd756cba835dfb44984ad1430b20507be2654bfae43b2ebc05d500518a22"
+const GeneratorHash = "fbaa06a156835dd31ec1d43d6bffbbe1e6b4cbf36fcb5f45a0973e18b7940385"

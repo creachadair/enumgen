@@ -17,7 +17,7 @@ func (v E4) Index() int { return int(v._E4) }
 func (v E4) String() string { return _str_E4[v._E4] }
 
 // Valid reports whether v is a valid E4 value.
-func (v E4) Valid() bool { return v._E4 != 0 }
+func (v E4) Valid() bool { return v._E4 > 0 && int(v._E4) < len(_str_E4) }
 
 var (
 	_str_E4 = []string{"<invalid>", "P", "D", "Q"}
@@ -40,7 +40,7 @@ func (v Color) Index() int { return int(v._Color) }
 func (v Color) String() string { return _str_Color[v._Color] }
 
 // Valid reports whether v is a valid Color value.
-func (v Color) Valid() bool { return v._Color != 0 }
+func (v Color) Valid() bool { return v._Color > 0 && int(v._Color) < len(_str_Color) }
 
 // Set implements part of the flag.Value interface for Color.
 // A value must equal the string representation of an enumerator.

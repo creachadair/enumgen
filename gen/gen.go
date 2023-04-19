@@ -189,7 +189,7 @@ func (v %[1]s) Index() int { return int(v.%[2]s) }
 func (v %[1]s) String() string { return %[3]s[v.%[2]s] }
 
 // Valid reports whether v is a valid %[1]s value.
-func (v %[1]s) Valid() bool { return v.%[2]s != 0 }
+func (v %[1]s) Valid() bool { return v.%[2]s > 0 && int(v.%[2]s) < len(%[3]s) }
 `, e.Type, field, strs)
 
 	// If requested, emit flag.Value methods.
