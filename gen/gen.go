@@ -133,6 +133,7 @@ func (c *Config) Generate(w io.Writer) error {
 	for _, e := range c.Enum {
 		if e.FlagValue || e.TextMarshal {
 			fmt.Fprintln(&buf, `import "fmt"`)
+			fmt.Fprintln(&buf, `import "strings"`)
 			break
 		}
 	}
@@ -199,7 +200,7 @@ func (v %[1]s) Valid() bool { return v.%[2]s > 0 && int(v.%[2]s) < len(%[3]s) }
 // A value must equal the string representation of an enumerator.
 func (v *%[1]s) Set(s string) error {
    for i, opt := range %[3]s[1:] {
-      if opt == s {
+      if strings.EqualFold(opt, s) {
          v.%[2]s = %[4]s(i+1)
          return nil
       }

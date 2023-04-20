@@ -3,6 +3,7 @@
 package testdata
 
 import "fmt"
+import "strings"
 
 // An enumeration defined in a Go file.
 type E4 struct{ _E4 uint8 }
@@ -46,7 +47,7 @@ func (v Color) Valid() bool { return v._Color > 0 && int(v._Color) < len(_str_Co
 // A value must equal the string representation of an enumerator.
 func (v *Color) Set(s string) error {
 	for i, opt := range _str_Color[1:] {
-		if opt == s {
+		if strings.EqualFold(opt, s) {
 			v._Color = uint8(i + 1)
 			return nil
 		}

@@ -3,6 +3,7 @@
 package testdata
 
 import "fmt"
+import "strings"
 
 type E1 struct{ _E1 uint8 }
 
@@ -66,7 +67,7 @@ func (v E3) Valid() bool { return v._E3 > 0 && int(v._E3) < len(_str_E3) }
 // A value must equal the string representation of an enumerator.
 func (v *E3) Set(s string) error {
 	for i, opt := range _str_E3[1:] {
-		if opt == s {
+		if strings.EqualFold(opt, s) {
 			v._E3 = uint8(i + 1)
 			return nil
 		}
@@ -106,4 +107,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "fbaa06a156835dd31ec1d43d6bffbbe1e6b4cbf36fcb5f45a0973e18b7940385"
+const GeneratorHash = "16dedbac58d35a3e2b9dc2aaa6a42b03994820129accd5e5adb880aeff6e0b4a"
