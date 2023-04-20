@@ -58,7 +58,7 @@ value comparisons, enumerators can be used as map keys, and users of the type
 outside the package cannot create new non-zero values of the type. The zero
 value is explicitly defined as the "unknown" value for an enumeration.
 
-The generated type exports three methods:
+The generated type exports four methods:
 
 - The `Enum` method returns the name of the generated type.
 
@@ -68,6 +68,15 @@ The generated type exports three methods:
 
 - The `String` method returns a string representation for each enumerator,
   which defaults to the enumerator's base name.
+
+There are also some optional components that are generated on request:
+
+- If `constructor` is true, a `New<Name>` constructor is generated.
+
+- If `flag-value` is true, the type satisfies the `flag.Value` interface.
+
+- If `text-marshal` is true, the type satisfies the `encoding.TextMarshaler`
+  and `encoding.TextUnmarshaler` interfaces.
 
 ## Configuration
 

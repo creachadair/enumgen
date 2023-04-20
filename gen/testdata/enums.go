@@ -2,8 +2,10 @@
 
 package testdata
 
-import "fmt"
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type E1 struct{ _E1 uint8 }
 
@@ -63,14 +65,24 @@ func (v E3) String() string { return _str_E3[v._E3] }
 // Valid reports whether v is a valid E3 value.
 func (v E3) Valid() bool { return v._E3 > 0 && int(v._E3) < len(_str_E3) }
 
+// newE3 returns the first enumerator of E3 whose string is a
+// case-insensitive match for s. If no enumerator matches, it returns the
+// invalid (zero) enumerator.
+func newE3(s string) E3 {
+	for i, opt := range _str_E3[1:] {
+		if strings.EqualFold(opt, s) {
+			return E3{uint8(i + 1)}
+		}
+	}
+	return E3{0}
+}
+
 // Set implements part of the flag.Value interface for E3.
 // A value must equal the string representation of an enumerator.
 func (v *E3) Set(s string) error {
-	for i, opt := range _str_E3[1:] {
-		if strings.EqualFold(opt, s) {
-			v._E3 = uint8(i + 1)
-			return nil
-		}
+	if e := newE3(s); e.Valid() {
+		*v = e
+		return nil
 	}
 	return fmt.Errorf("invalid value for E3: %q", s)
 }
@@ -107,4 +119,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "16dedbac58d35a3e2b9dc2aaa6a42b03994820129accd5e5adb880aeff6e0b4a"
+const GeneratorHash = "ab4db658bdc0a2c9a6d65d20d8e348ab59dd70cf5bd826011f9300d3813889d2"

@@ -2,8 +2,10 @@
 
 package testdata
 
-import "fmt"
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // An enumeration defined in a Go file.
 type E4 struct{ _E4 uint8 }
@@ -43,14 +45,24 @@ func (v Color) String() string { return _str_Color[v._Color] }
 // Valid reports whether v is a valid Color value.
 func (v Color) Valid() bool { return v._Color > 0 && int(v._Color) < len(_str_Color) }
 
+// NewColor returns the first enumerator of Color whose string is a
+// case-insensitive match for s. If no enumerator matches, it returns the
+// invalid (zero) enumerator.
+func NewColor(s string) Color {
+	for i, opt := range _str_Color[1:] {
+		if strings.EqualFold(opt, s) {
+			return Color{uint8(i + 1)}
+		}
+	}
+	return Color{0}
+}
+
 // Set implements part of the flag.Value interface for Color.
 // A value must equal the string representation of an enumerator.
 func (v *Color) Set(s string) error {
-	for i, opt := range _str_Color[1:] {
-		if strings.EqualFold(opt, s) {
-			v._Color = uint8(i + 1)
-			return nil
-		}
+	if e := NewColor(s); e.Valid() {
+		*v = e
+		return nil
 	}
 	return fmt.Errorf("invalid value for Color: %q", s)
 }
