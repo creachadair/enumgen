@@ -8,7 +8,7 @@
 set -euo pipefail
 
 readonly tool='github.com/creachadair/enumgen'
-readonly gen='../gen.go'
+readonly gen='../gen.go ../config.go'
 readonly yaml='gentest.yml'
 readonly gofile='testdata.go'
 

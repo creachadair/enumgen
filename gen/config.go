@@ -17,12 +17,12 @@ import (
 
 // LoadConfig reads and parses a YAML configuration from path.
 //
-// If the filename of path ends in ".go", it calls ConfigFromSource on the
+// If the filename of path ends in ".go", it calls ConfigFromGoFile on the
 // file; otherwise the file must be a standalone YAML file and is parsed by
 // ConfigFromFile.
 func LoadConfig(path string) (*Config, error) {
 	if filepath.Ext(path) == ".go" {
-		return ConfigFromSource(path)
+		return ConfigFromGoFile(path)
 	}
 	return ConfigFromFile(path)
 }
@@ -37,13 +37,23 @@ func ConfigFromFile(path string) (*Config, error) {
 	return ParseConfig(f)
 }
 
-// ConfigFromSource reads and parses the Go file specified by path, and
+// ConfigFromGoFile reads and parses the Go file specified by path, and
 // extracts a YAML config from each first comment block tagged enumgen:type
 // found in the file.  An error results if no such comment is found.
-func ConfigFromSource(path string) (*Config, error) {
+func ConfigFromGoFile(path string) (*Config, error) {
+	src, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return ConfigFromSource(path, src)
+}
+
+// ConfigFromSource parses a config from the text of a Go source file.
+// The path is used to for diagnostics.
+func ConfigFromSource(path string, text []byte) (*Config, error) {
 	const flags = parser.ParseComments | parser.SkipObjectResolution
 	fset := token.NewFileSet()
-	f, err := parser.ParseFile(fset, path, nil, flags)
+	f, err := parser.ParseFile(fset, path, text, flags)
 	if err != nil {
 		return nil, err
 	}

@@ -39,7 +39,7 @@ func checkGenerated(t *testing.T) {
 	// Verify that the generator package and the testdata config match the hash
 	// embedded in the generated test data.
 	h := sha256.New()
-	for _, path := range []string{"gen.go", "testdata/gentest.yml", "testdata/testdata.go"} {
+	for _, path := range []string{"gen.go", "config.go", "testdata/gentest.yml", "testdata/testdata.go"} {
 		f, err := os.Open(path)
 		if err != nil {
 			t.Fatalf("Reading input: %v", err)
