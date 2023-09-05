@@ -99,6 +99,11 @@ type Enum struct {
 	// Typically a name like "Unknown" or "Invalid" makes sense.
 	// Otherwise, no variable is defined for the zero value; the caller can
 	// still construct a zero value explicitly if needed.
+	//
+	// Documentation and text for the zero value can be provided by including an
+	// entry with this name in the list of values. Otherwise the zero value will
+	// be undocumented and use a default string. The index of the zero value is
+	// always 0, even if explicitly specified.
 	Zero string
 
 	// If set, this text is inserted at the top of the var block in the
@@ -186,6 +191,8 @@ func (c *Config) Generate(w io.Writer) error {
 
 // generate generates the enumeration defined by e into w.
 func (e *Enum) generate(w io.Writer) error {
+	zero, rest := e.extractZero()
+
 	if doc := formatDoc(e.Doc); doc != "" {
 		fmt.Fprintln(w, doc)
 	}
@@ -203,13 +210,10 @@ func (e *Enum) generate(w io.Writer) error {
 	fmt.Fprintf(w, "type %[1]s struct { %s %s }\n", e.Type, field, base)
 
 	// Extract the label strings for the defined enumerators.
-	labels := make([]string, len(e.Values))
-	for i, v := range e.Values {
-		if v.Text != "" {
-			labels[i] = v.Text
-		} else {
-			labels[i] = v.Name
-		}
+	labels := make([]string, len(rest)+1)
+	labels[0] = zero.label()
+	for i, v := range rest {
+		labels[i+1] = v.label()
 	}
 	strs := fmt.Sprintf("_str_%s", e.Type)
 
@@ -292,24 +296,20 @@ func (v *%[1]s) UnmarshalText(data []byte) error {
 	if doc := formatDoc(e.ValDoc); doc != "" {
 		fmt.Fprintln(w, doc)
 	}
-	fmt.Fprintln(w, "var (")
-	fmt.Fprintf(w, "\t%s = []string{%q,", strs, "<invalid>")
+	fmt.Fprintf(w, "var(\n\t%s = []string{", strs)
 	for _, label := range labels {
 		fmt.Fprintf(w, "%q,", label)
 	}
 	fmt.Fprint(w, "}\n\n")
 
-	if e.Zero != "" {
-		fmt.Fprintf(w, "\t%s%s = %s{0}\n", e.Prefix, e.Zero, e.Type)
-	}
-	for i, v := range e.Values {
+	enumerate := func(i int, v *Value) {
 		fullName := e.Prefix + v.Name
 		doc := formatDoc(injectName(v.Doc, fullName))
 		multiline := strings.Contains(doc, "\n")
 		if doc != "" && multiline {
 			fmt.Fprintf(w, "\t%s\n", doc)
 		}
-		fmt.Fprintf(w, "\t%[1]s = %[2]s{%[3]d}", fullName, e.Type, i+1)
+		fmt.Fprintf(w, "\t%[1]s = %[2]s{%[3]d}", fullName, e.Type, i)
 		if doc != "" {
 			if multiline {
 				fmt.Fprintln(w) // extra space after documented enumerator
@@ -319,8 +319,45 @@ func (v *%[1]s) UnmarshalText(data []byte) error {
 		}
 		fmt.Fprintln(w)
 	}
+	if zero != nil {
+		enumerate(0, zero)
+	} else if e.Zero != "" {
+		fmt.Fprintf(w, "\t%s%s = %s{0}\n", e.Prefix, e.Zero, e.Type)
+	}
+	for i, v := range rest {
+		enumerate(i+1, v)
+	}
 	fmt.Fprintln(w, ")")
 	return nil
+}
+
+// extractZero separates and returns the zero enumerator and the non-zero
+// enumerators, if a zero is explicitly defined. If not, zero == nil and rest
+// includes all the enumerators.
+func (e *Enum) extractZero() (zero *Value, rest []*Value) {
+	if e.Zero == "" {
+		return nil, e.Values
+	}
+	for i, v := range e.Values {
+		if v.Name == e.Zero {
+			zero = v
+			rest = make([]*Value, 0, len(e.Values)-1)
+			rest = append(rest, e.Values[:i]...)
+			rest = append(rest, e.Values[i+1:]...)
+			return
+		}
+	}
+	return nil, e.Values
+}
+
+// label returns the label string for v.
+func (v *Value) label() string {
+	if v == nil {
+		return "<invalid>"
+	} else if v.Text != "" {
+		return v.Text
+	}
+	return v.Name
 }
 
 // formatDoc reformats a doc string into Go line comments. Line breaks in the

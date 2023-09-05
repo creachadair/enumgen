@@ -88,6 +88,14 @@ func TestEnums(t *testing.T) {
 		check(t, testdata.E4_Q, true, "Q")
 	})
 
+	t.Run("Count", func(t *testing.T) {
+		var zero testdata.Count
+		check(t, zero, false, "zilch")
+		check(t, testdata.Zero, false, "zilch")
+		check(t, testdata.One, true, "lonely")
+		check(t, testdata.Two, true, "tango")
+	})
+
 	t.Run("E1Index", func(t *testing.T) {
 		var zero testdata.E1
 		for i, e := range []testdata.E1{zero, testdata.A, testdata.B, testdata.C} {
@@ -263,12 +271,6 @@ func TestErrors(t *testing.T) {
 		}},
 
 		// Check for name collisions with default (zero) enumerators.
-		{`"X" conflicts with default`, &gen.Config{
-			Package: "foo",
-			Enum: []*gen.Enum{
-				{Type: "bar", Zero: "X", Values: []*gen.Value{{Name: "X"}}},
-			},
-		}},
 		{`name "X" duplicated in "bar"`, &gen.Config{
 			Package: "foo",
 			Enum: []*gen.Enum{
