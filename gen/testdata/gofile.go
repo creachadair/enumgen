@@ -19,7 +19,7 @@ func (v E4) Index() int { return int(v._E4) }
 // String returns the string representation of E4 v.
 func (v E4) String() string { return _str_E4[v._E4] }
 
-// Valid reports whether v is a valid E4 value.
+// Valid reports whether v is a valid non-zero E4 value.
 func (v E4) Valid() bool { return v._E4 > 0 && int(v._E4) < len(_str_E4) }
 
 var (
@@ -42,12 +42,12 @@ func (v Color) Index() int { return int(v._Color) }
 // String returns the string representation of Color v.
 func (v Color) String() string { return _str_Color[v._Color] }
 
-// Valid reports whether v is a valid Color value.
+// Valid reports whether v is a valid non-zero Color value.
 func (v Color) Valid() bool { return v._Color > 0 && int(v._Color) < len(_str_Color) }
 
 // NewColor returns the first enumerator of Color whose string is a
 // case-insensitive match for s. If no enumerator matches, it returns the
-// invalid (zero) enumerator.
+// zero enumerator.
 func NewColor(s string) Color {
 	for i, opt := range _str_Color[1:] {
 		if strings.EqualFold(opt, s) {

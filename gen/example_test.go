@@ -49,7 +49,7 @@ func Example() {
 	// // String returns the string representation of Example v.
 	// func (v Example) String() string { return _str_Example[v._Example] }
 	//
-	// // Valid reports whether v is a valid Example value.
+	// // Valid reports whether v is a valid non-zero Example value.
 	// func (v Example) Valid() bool { return v._Example > 0 && int(v._Example) < len(_str_Example) }
 	//
 	// var (

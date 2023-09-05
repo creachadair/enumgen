@@ -21,7 +21,7 @@
 //	   Enum() string   // return the enumeration type name
 //	   Index() int     // return the ordinal index of the enumerator (0 is invalid)
 //	   String() string // return the string representation of an enumerator
-//	   Valid() bool    // report whether the receiver is a valid enumerator
+//	   Valid() bool    // report whether the receiver is a valid nonzero enumerator
 //	}
 //
 // Callers wishing to accept arbitrary enumerations may define this interface.
@@ -228,7 +228,7 @@ func (v %[1]s) Index() int { return int(v.%[2]s) }
 // String returns the string representation of %[1]s v.
 func (v %[1]s) String() string { return %[3]s[v.%[2]s] }
 
-// Valid reports whether v is a valid %[1]s value.
+// Valid reports whether v is a valid non-zero %[1]s value.
 func (v %[1]s) Valid() bool { return v.%[2]s > 0 && int(v.%[2]s) < len(%[3]s) }
 `, e.Type, field, strs)
 
@@ -236,7 +236,7 @@ func (v %[1]s) Valid() bool { return v.%[2]s > 0 && int(v.%[2]s) < len(%[3]s) }
 		fmt.Fprintf(w, `
 // %[2]s returns the first enumerator of %[1]s whose string is a
 // case-insensitive match for s. If no enumerator matches, it returns the
-// invalid (zero) enumerator.
+// zero enumerator.
 func %[2]s(s string) %[1]s {
    for i, opt := range %[3]s[1:] {
       if strings.EqualFold(opt, s) {
@@ -273,7 +273,7 @@ func (v %[1]s) MarshalText() ([]byte, error) { return []byte(v.String()), nil }
 		fmt.Fprintf(w, `
 // UnarshalText decodes the value of the %[1]s enumerator from a string.
 // It reports an error if data does not encode a known enumerator.
-// An empty slice decodes to the invalid (zero) value.
+// An empty slice decodes to the zero value.
 // This method satisfies the encoding.TextUnmarshaler interface.
 func (v *%[1]s) UnmarshalText(data []byte) error {
    *v = %[1]s{}

@@ -18,7 +18,7 @@ func (v E1) Index() int { return int(v._E1) }
 // String returns the string representation of E1 v.
 func (v E1) String() string { return _str_E1[v._E1] }
 
-// Valid reports whether v is a valid E1 value.
+// Valid reports whether v is a valid non-zero E1 value.
 func (v E1) Valid() bool { return v._E1 > 0 && int(v._E1) < len(_str_E1) }
 
 var (
@@ -40,7 +40,7 @@ func (v E2) Index() int { return int(v._E2) }
 // String returns the string representation of E2 v.
 func (v E2) String() string { return _str_E2[v._E2] }
 
-// Valid reports whether v is a valid E2 value.
+// Valid reports whether v is a valid non-zero E2 value.
 func (v E2) Valid() bool { return v._E2 > 0 && int(v._E2) < len(_str_E2) }
 
 var (
@@ -62,12 +62,12 @@ func (v E3) Index() int { return int(v._E3) }
 // String returns the string representation of E3 v.
 func (v E3) String() string { return _str_E3[v._E3] }
 
-// Valid reports whether v is a valid E3 value.
+// Valid reports whether v is a valid non-zero E3 value.
 func (v E3) Valid() bool { return v._E3 > 0 && int(v._E3) < len(_str_E3) }
 
 // newE3 returns the first enumerator of E3 whose string is a
 // case-insensitive match for s. If no enumerator matches, it returns the
-// invalid (zero) enumerator.
+// zero enumerator.
 func newE3(s string) E3 {
 	for i, opt := range _str_E3[1:] {
 		if strings.EqualFold(opt, s) {
@@ -93,7 +93,7 @@ func (v E3) MarshalText() ([]byte, error) { return []byte(v.String()), nil }
 
 // UnarshalText decodes the value of the E3 enumerator from a string.
 // It reports an error if data does not encode a known enumerator.
-// An empty slice decodes to the invalid (zero) value.
+// An empty slice decodes to the zero value.
 // This method satisfies the encoding.TextUnmarshaler interface.
 func (v *E3) UnmarshalText(data []byte) error {
 	*v = E3{}
@@ -128,7 +128,7 @@ func (v Count) Index() int { return int(v._Count) }
 // String returns the string representation of Count v.
 func (v Count) String() string { return _str_Count[v._Count] }
 
-// Valid reports whether v is a valid Count value.
+// Valid reports whether v is a valid non-zero Count value.
 func (v Count) Valid() bool { return v._Count > 0 && int(v._Count) < len(_str_Count) }
 
 var (
@@ -141,4 +141,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "ac125d41de567118ef359373c2b29b7fe6d4f1779353d6a173b0a8012b7549d6"
+const GeneratorHash = "a718053f726fc151196ebd76f319fa801fff408641b0724b7d363d443486bc38"
