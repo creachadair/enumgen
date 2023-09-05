@@ -117,6 +117,28 @@ var (
 	Y = E3{2}
 )
 
+type Count struct{ _Count uint8 }
+
+// Enum returns the name of the enumeration type for Count.
+func (Count) Enum() string { return "Count" }
+
+// Index returns the ordinal index of Count v.
+func (v Count) Index() int { return int(v._Count) }
+
+// String returns the string representation of Count v.
+func (v Count) String() string { return _str_Count[v._Count] }
+
+// Valid reports whether v is a valid Count value.
+func (v Count) Valid() bool { return v._Count > 0 && int(v._Count) < len(_str_Count) }
+
+var (
+	_str_Count = []string{"zilch", "lonely", "tango"}
+
+	Zero = Count{0} // Nothing to see here
+	One  = Count{1} // The very loneliest
+	Two  = Count{2}
+)
+
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "566209aaf46516347d8ba29d2125ed5b98a566c3f2f6646de9be556d2de68ea9"
+const GeneratorHash = "ac125d41de567118ef359373c2b29b7fe6d4f1779353d6a173b0a8012b7549d6"

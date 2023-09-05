@@ -134,24 +134,37 @@ func (c *Config) checkValid() error {
 		if len(e.Values) == 0 {
 			return fmt.Errorf("enum %d: no enumerators defined", i+1)
 		}
-		if zero := e.Prefix + e.Zero; zero != "" {
-			if valueSeen[zero] != "" {
+		if zero := e.Prefix + e.Zero; e.Zero != "" {
+			if valueSeen[zero] != "" && valueSeen[zero] != e.Type {
 				return fmt.Errorf("enum %q default %q duplicated in %q",
 					e.Type, zero, valueSeen[zero])
 			}
 			valueSeen[zero] = e.Type
 		}
+
+		// It is OK for the zero enumerator to be duplicated in its own value
+		// list, but other names must not be duplicated within the list. This map
+		// keeps track of just the names in this group to prevent that.
+
+		var thisName mapset.Set[string]
 		for j, v := range e.Values {
 			if v.Name == "" {
 				return fmt.Errorf("enum %q value %d: name not defined", e.Type, j+1)
-			} else if e.Zero != "" && v.Name == e.Zero {
-				return fmt.Errorf("enum %q value %d: name %q conflicts with default", e.Type, j+1, v.Name)
-			} else if full := e.Prefix + v.Name; valueSeen[full] != "" {
-				return fmt.Errorf("enum %q value %d: name %q duplicated in %q",
-					e.Type, j+1, full, valueSeen[full])
-			} else {
-				valueSeen[full] = e.Type
+			} else if thisName.Has(v.Name) {
+				return fmt.Errorf("enum %q value %d: name %q duplicated in %q", e.Type, j+1, v.Name, e.Type)
 			}
+			thisName.Add(v.Name)
+
+			full := e.Prefix + v.Name
+			if valueSeen[full] != "" {
+				// If this enumerator is "my" zero value, it's OK to repeat it in
+				// the values list to provide text and documentation.
+				if valueSeen[full] != e.Type || e.Zero == "" || e.Zero != v.Name {
+					return fmt.Errorf("enum %q value %d: name %q duplicated in %q",
+						e.Type, j+1, full, valueSeen[full])
+				}
+			}
+			valueSeen[full] = e.Type
 		}
 	}
 	return nil

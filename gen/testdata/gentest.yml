@@ -27,3 +27,17 @@ enum:
         text: foo
       - name: Y
         text: bar
+
+  - type: Count
+    zero: Zero
+    values:
+      - name: One
+        text: lonely
+        doc: The very loneliest
+
+      - name: Two
+        text: tango
+
+      - name: Zero
+        text: zilch
+        doc: Nothing to see here
