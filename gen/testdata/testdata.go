@@ -19,6 +19,7 @@ values:
 //   A Color is a source of joy for all who behold it.
 // flag-value: true
 // constructor: true
+// val-doc: The names of the colours supported here.
 // values:
 //   - name: Red
 //     doc: "{name} is the colour of my true love's eyes."

@@ -67,6 +67,7 @@ func (v *Color) Set(s string) error {
 	return fmt.Errorf("invalid value for Color: %q", s)
 }
 
+// The names of the colours supported here.
 var (
 	_str_Color = []string{"<invalid>", "fire-engine-red", "scummy-green", "azure-sky-blue"}
 
