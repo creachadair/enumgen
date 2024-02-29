@@ -45,7 +45,7 @@ func LoadPackage() (*Config, error) {
 		}
 		cfg.Enum = append(cfg.Enum, c.Enum...)
 	}
-	if cfg == nil {
+	if cfg == nil || len(cfg.Enum) == 0 {
 		return nil, errors.New("no matching .go files found")
 	}
 	return cfg, nil
