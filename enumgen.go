@@ -9,6 +9,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"log"
 	"os"
@@ -17,19 +18,17 @@ import (
 )
 
 var (
-	configPath = flag.String("config", "", "Configuration file path (required)")
+	configPath = flag.String("config", "", "Configuration file path")
 	outputPath = flag.String("output", "", "Output file path (required)")
 )
 
 func main() {
 	flag.Parse()
-	switch {
-	case *configPath == "":
-		log.Fatal("You must specify a -config file path")
-	case *outputPath == "":
+	if *outputPath == "" {
 		log.Fatal("You must specify an -output file path")
 	}
-	cfg, err := gen.LoadConfig(*configPath)
+
+	cfg, err := loadConfig()
 	if err != nil {
 		log.Fatalf("Reading config: %v", err)
 	}
@@ -37,11 +36,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("Output: %v", err)
 	}
-	err = cfg.Generate(f)
-	cerr := f.Close()
-	if err != nil {
+	log.Printf("Generating %d enumerations for package %q", len(cfg.Enum), cfg.Package)
+	if err := errors.Join(cfg.Generate(f), f.Close()); err != nil {
 		log.Fatalf("Generate: %v", err)
-	} else if cerr != nil {
-		log.Fatalf("Close output: %v", err)
 	}
+}
+
+func loadConfig() (*gen.Config, error) {
+	if *configPath == "" {
+		log.Print("Loading configuration from package source")
+		return gen.LoadPackage()
+	}
+	return gen.LoadConfig(*configPath)
 }

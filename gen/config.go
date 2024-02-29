@@ -27,6 +27,42 @@ func LoadConfig(path string) (*Config, error) {
 	return ConfigFromFile(path)
 }
 
+// LoadPackage reads and parses a combined YAML configuration from the Go files
+// stored in the current working directory.
+//
+// An error is reported if the current working directory does not contain any
+// Go source files with enumeration configurations in them, or if the files
+// match multiple package names.
+func LoadPackage() (*Config, error) {
+	des, err := os.ReadDir(".")
+	if err != nil {
+		return nil, err
+	}
+	var cfg *Config
+	for _, de := range des {
+		if filepath.Ext(de.Name()) != ".go" {
+			continue
+		}
+		c, err := ConfigFromGoFile(de.Name())
+		if errors.Is(err, errNoComment) {
+			continue // OK, skip this file
+		} else if err != nil {
+			return nil, err
+		}
+		if cfg == nil {
+			cfg = c
+			continue
+		} else if cfg.Package != c.Package {
+			return nil, fmt.Errorf("file %q has package %q, want %q", de.Name(), c.Package, cfg.Package)
+		}
+		cfg.Enum = append(cfg.Enum, c.Enum...)
+	}
+	if cfg == nil {
+		return nil, errors.New("no matching .go files found")
+	}
+	return cfg, nil
+}
+
 // ConfigFromFile reads and parses the YAML config file specified by path.
 func ConfigFromFile(path string) (*Config, error) {
 	f, err := os.Open(path)
@@ -47,6 +83,8 @@ func ConfigFromGoFile(path string) (*Config, error) {
 	}
 	return ConfigFromSource(path, src)
 }
+
+var errNoComment = errors.New("no config comment")
 
 // ConfigFromSource parses a config from the text of a Go source file.
 // The path is used to for diagnostics.
@@ -100,7 +138,7 @@ func ConfigFromSource(path string, text []byte) (*Config, error) {
 		fmt.Fprintln(&buf, indentLines("  ", enum.text))
 	}
 	if buf.Len() == 0 {
-		return nil, fmt.Errorf("no config comment found in %q", path)
+		return nil, fmt.Errorf("%w found in %q", errNoComment, path)
 	}
 	return ParseConfig(&buf)
 }

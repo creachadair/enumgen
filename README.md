@@ -13,7 +13,7 @@ To generate types from a separate config file, add a rule like this:
 
 ```go
 //go:generate -command enumgen go run github.com/creachadair/enumgen@latest
-//go:generate enumgen -config enums.yml -output generated.go
+//go:generate enumgen --config enums.yml --output generated.go
 ```
 
 Alternatively, you may embed the YAML definition of a [`gen.Enum`][ge] inside a
@@ -21,7 +21,7 @@ Go source file (detected by a name ending in ".go"), in a comment group
 prefixed by `enumgen:type`:
 
 ```go
-//go:generate enumgen -config thisfile.go -output generated.go
+//go:generate enumgen --config thisfile.go --output generated.go
 
 // Note there may be no space before the annotation, and the annotation
 // must be the first line of its comment group.
@@ -49,6 +49,9 @@ values:
 There may be multiple such blocks in a file; each defines a single enumeration.
 The text after `enumgen:type` becomes the name of the type; the content of the
 block must be a single [`gen.Enum`][ge] value.
+p
+If the `--config` flag is omitted entirely, all the `.go` files in the current
+package will be processed for matching comment groups.
 
 ## Type Structure
 
