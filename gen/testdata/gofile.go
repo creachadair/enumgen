@@ -30,7 +30,7 @@ var (
 	E4_Q = E4{3}
 )
 
-// A {name} denotes the size of a t-shirt.
+// A Size denotes the size of a t-shirt.
 type Size struct{ _Size uint8 }
 
 // Enum returns the name of the enumeration type for Size.

@@ -202,7 +202,7 @@ func (e *Enum) generate(w io.Writer) error {
 		return fmt.Errorf("cannot override index of zero enumerator %q", zero.Name)
 	}
 
-	if doc := formatDoc(e.Doc); doc != "" {
+	if doc := formatDoc(injectName(e.Doc, e.Type)); doc != "" {
 		fmt.Fprintln(w, doc)
 	}
 	base := baseType(len(e.Values))
