@@ -43,14 +43,14 @@ func Example() {
 	// // Enum returns the name of the enumeration type for Example.
 	// func (Example) Enum() string { return "Example" }
 	//
-	// // Index returns the ordinal index of Example v.
-	// func (v Example) Index() int { return int(v._Example) }
-	//
 	// // String returns the string representation of Example v.
 	// func (v Example) String() string { return _str_Example[v._Example] }
 	//
 	// // Valid reports whether v is a valid non-zero Example value.
 	// func (v Example) Valid() bool { return v._Example > 0 && int(v._Example) < len(_str_Example) }
+	//
+	// // Index returns the integer index of Example v.
+	// func (v Example) Index() int { return int(v._Example) }
 	//
 	// var (
 	// 	_str_Example = []string{"<invalid>", "Good", "Bad", "Ugly"}
