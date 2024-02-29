@@ -33,34 +33,34 @@
 // The gen.Config type defines a set of enumerations to generate in a single
 // package. The general structure of a config in YAML is:
 //
-//		package: "name"        # the name of the output package (required)
+//	package: "name"        # the name of the output package (required)
 //
-//		enum:                  # a list of enumeration types to generate
+//	enum:                  # a list of enumeration types to generate
 //
-//		  - type: "Name"       # the type name for this enum
-//		    prefix: "x"        # (optional) prefix to append to each enumerator name
-//		    zero: "Bad"        # (optional) name of zero enumerator
+//	  - type: "Name"       # the type name for this enum
+//	    prefix: "x"        # (optional) prefix to append to each enumerator name
+//	    zero: "Bad"        # (optional) name of zero enumerator
 //
-//		    doc: "text"        # (optional) documentation comment for the enum type
-//		    val-doc: "text"    # (optional) aggregate documentation for the values
+//	    doc: "text"        # (optional) documentation comment for the enum type
+//	    val-doc: "text"    # (optional) aggregate documentation for the values
 //
-//		    constructor: true  # construct a New* function to convert strings to enumerators
-//		    flag-value: true   # implement the flag.Value interface on this enum
-//		    text-marshal: true # implement the TextMarshaler/Unmarshaler interfaces on this enum
+//	    constructor: true  # construct a New* function to convert strings to enumerators
+//	    flag-value: true   # implement the flag.Value interface on this enum
+//	    text-marshal: true # implement the TextMarshaler/Unmarshaler interfaces on this enum
 //
-//		    values:
-//		      - name: A        # the name of the first enumerator (required)
-//		        doc: "text"    # (optional) documentation for this enumerator
-//		        text: "aaa"    # (optional) string text for the enumerator
-//	           index: 25      # (optional) integer index for the enumerator
+//	    values:
+//	      - name: A        # the name of the first enumerator (required)
+//	        doc: "text"    # (optional) documentation for this enumerator
+//	        text: "aaa"    # (optional) string text for the enumerator
+//	        index: 25      # (optional) integer index for the enumerator
 //
-//		      - name: B        # ... additional enumerators
-//		      - name: C
+//	      - name: B        # ... additional enumerators
+//	      - name: C
 //
-//		  - type: "Other"
-//		    values:
-//		      - name: X
-//		      - name: Y
+//	  - type: "Other"
+//	    values:
+//	      - name: X
+//	      - name: Y
 package gen
 
 import (
