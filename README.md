@@ -40,6 +40,7 @@ values:
 
   - name: Green
     text: scummy-green
+    index: 14
 
   - name: Blue
     text: azure-sky-blue
@@ -65,7 +66,13 @@ The generated type exports four methods:
 
 - The `Enum` method returns the name of the generated type.
 
-- The `Index` method returns the ordinal index of the enumerator (in the order of declaration within the values list, 0 denotes the zero enumerator).
+- The `Index` method returns an integer index of the enumerator. By default,
+  the index is the 1-based ordinal position of the enumerator within the values
+  list. However, an enumerator may override the `index` field to set a specific
+  integer value. Enumerators without an explicit `index` are given an index one
+  greater than the index of their predecessor.
+
+  If an explicit zero enumerator is defined, its index cannot be replaced.
 
 - The `Valid` method reports whether an enumerator is valid (non-zero).
 
@@ -106,6 +113,7 @@ enum:                  # a list of enumeration types to generate
       - name: A        # the name of the first enumerator (required)
         doc: "text"    # (optional) documentation for this enumerator
         text: "aaa"    # (optional) string text for the enumerator
+        index: 25      # (optional) integer index for the enumerator
 
       - name: B        # ... additional enumerators
       - name: C

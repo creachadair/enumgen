@@ -19,7 +19,7 @@
 //
 //	type EnumType interface {
 //	   Enum() string   // return the enumeration type name
-//	   Index() int     // return the ordinal index of the enumerator (0 is invalid)
+//	   Index() int     // return the integer index of the enumerator
 //	   String() string // return the string representation of an enumerator
 //	   Valid() bool    // report whether the receiver is a valid nonzero enumerator
 //	}
@@ -33,33 +33,34 @@
 // The gen.Config type defines a set of enumerations to generate in a single
 // package. The general structure of a config in YAML is:
 //
-//	package: "name"        # the name of the output package (required)
+//		package: "name"        # the name of the output package (required)
 //
-//	enum:                  # a list of enumeration types to generate
+//		enum:                  # a list of enumeration types to generate
 //
-//	  - type: "Name"       # the type name for this enum
-//	    prefix: "x"        # (optional) prefix to append to each enumerator name
-//	    zero: "Bad"        # (optional) name of zero enumerator
+//		  - type: "Name"       # the type name for this enum
+//		    prefix: "x"        # (optional) prefix to append to each enumerator name
+//		    zero: "Bad"        # (optional) name of zero enumerator
 //
-//	    doc: "text"        # (optional) documentation comment for the enum type
-//	    val-doc: "text"    # (optional) aggregate documentation for the values
+//		    doc: "text"        # (optional) documentation comment for the enum type
+//		    val-doc: "text"    # (optional) aggregate documentation for the values
 //
-//	    constructor: true  # construct a New* function to convert strings to enumerators
-//	    flag-value: true   # implement the flag.Value interface on this enum
-//	    text-marshal: true # implement the TextMarshaler/Unmarshaler interfaces on this enum
+//		    constructor: true  # construct a New* function to convert strings to enumerators
+//		    flag-value: true   # implement the flag.Value interface on this enum
+//		    text-marshal: true # implement the TextMarshaler/Unmarshaler interfaces on this enum
 //
-//	    values:
-//	      - name: A        # the name of the first enumerator (required)
-//	        doc: "text"    # (optional) documentation for this enumerator
-//	        text: "aaa"    # (optional) string text for the enumerator
+//		    values:
+//		      - name: A        # the name of the first enumerator (required)
+//		        doc: "text"    # (optional) documentation for this enumerator
+//		        text: "aaa"    # (optional) string text for the enumerator
+//	           index: 25      # (optional) integer index for the enumerator
 //
-//	      - name: B        # ... additional enumerators
-//	      - name: C
+//		      - name: B        # ... additional enumerators
+//		      - name: C
 //
-//	  - type: "Other"
-//	    values:
-//	      - name: X
-//	      - name: Y
+//		  - type: "Other"
+//		    values:
+//		      - name: X
+//		      - name: Y
 package gen
 
 import (
@@ -136,6 +137,10 @@ type Value struct {
 	// If set, this text is used as the string representation of the value.
 	// Otherwise, the Name field is used.
 	Text string
+
+	// If non-nil, this value is used as the index of the value.  Otherwise the
+	// index is one greater than the previous value's index.
+	Index *int
 }
 
 // Generate generates the enumerations defined by c into w as Go source text.
@@ -193,6 +198,9 @@ func (c *Config) Generate(w io.Writer) error {
 // generate generates the enumeration defined by e into w.
 func (e *Enum) generate(w io.Writer) error {
 	zero, rest := e.extractZero()
+	if zero != nil && zero.Index != nil && *zero.Index != 0 {
+		return fmt.Errorf("cannot override index of zero enumerator %q", zero.Name)
+	}
 
 	if doc := formatDoc(e.Doc); doc != "" {
 		fmt.Fprintln(w, doc)
@@ -210,21 +218,27 @@ func (e *Enum) generate(w io.Writer) error {
 	// Generate the enumeration type.
 	fmt.Fprintf(w, "type %[1]s struct { %s %s }\n", e.Type, field, base)
 
-	// Extract the label strings for the defined enumerators.
+	// Extract the label strings and indices for the defined enumerators.
 	labels := make([]string, len(rest)+1)
+	indices := make([]int, len(rest)+1)
 	labels[0] = zero.label()
+	curIndex, setIndex := 1, false
 	for i, v := range rest {
 		labels[i+1] = v.label()
+		if v.Index != nil {
+			curIndex = *v.Index
+			setIndex = true
+		}
+		indices[i+1] = curIndex
+		curIndex++
 	}
 	strs := fmt.Sprintf("_str_%s", e.Type)
+	idxs := fmt.Sprintf("_idx_%s", e.Type)
 
-	// Generate the Enum, Index, String, and Valid methods.
+	// Generate the Enum, String, and Valid methods.
 	fmt.Fprintf(w, `
 // Enum returns the name of the enumeration type for %[1]s.
 func (%[1]s) Enum() string { return %[1]q }
-
-// Index returns the ordinal index of %[1]s v.
-func (v %[1]s) Index() int { return int(v.%[2]s) }
 
 // String returns the string representation of %[1]s v.
 func (v %[1]s) String() string { return %[3]s[v.%[2]s] }
@@ -232,6 +246,21 @@ func (v %[1]s) String() string { return %[3]s[v.%[2]s] }
 // Valid reports whether v is a valid non-zero %[1]s value.
 func (v %[1]s) Valid() bool { return v.%[2]s > 0 && int(v.%[2]s) < len(%[3]s) }
 `, e.Type, field, strs)
+
+	// Generate the Index method.
+	if setIndex {
+		// Case 1: The index has overrides (refer to _idx_Name[...]).
+		fmt.Fprintf(w, `
+// Index returns the integer index of %[1]s v.
+func (v %[1]s) Index() int { return %[3]s[v.%[2]s] }
+`, e.Type, field, idxs)
+	} else {
+		// The index is conventional (return the ordinal directly).
+		fmt.Fprintf(w, `
+// Index returns the integer index of %[1]s v.
+func (v %[1]s) Index() int { return int(v.%[2]s) }
+`, e.Type, field)
+	}
 
 	if parseFunc != "" {
 		fmt.Fprintf(w, `
@@ -293,7 +322,7 @@ func (v *%[1]s) UnmarshalText(data []byte) error {
 `, e.Type, field, strs, base)
 	}
 
-	// Generate the enumerators and string values.
+	// Generate the enumerators and string and index values.
 	if doc := formatDoc(e.ValDoc); doc != "" {
 		fmt.Fprintln(w, doc)
 	}
@@ -301,7 +330,16 @@ func (v *%[1]s) UnmarshalText(data []byte) error {
 	for _, label := range labels {
 		fmt.Fprintf(w, "%q,", label)
 	}
-	fmt.Fprint(w, "}\n\n")
+	fmt.Fprint(w, "}\n")
+	if setIndex {
+		fmt.Fprintf(w, "\t%s = []int{", idxs)
+		for _, idx := range indices {
+			fmt.Fprintf(w, "%d,", idx)
+		}
+		fmt.Fprint(w, "}\n\n")
+	} else {
+		fmt.Fprintln(w)
+	}
 
 	enumerate := func(i int, v *Value) {
 		fullName := e.Prefix + v.Name
