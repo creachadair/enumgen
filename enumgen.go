@@ -13,6 +13,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/creachadair/enumgen/gen"
 )
@@ -46,6 +47,8 @@ func loadConfig() (*gen.Config, error) {
 	if *configPath == "" {
 		log.Print("Loading configuration from package source")
 		return gen.LoadPackage()
+	} else if strings.HasSuffix(*configPath, ".go") {
+		return gen.ConfigFromGoFile(*configPath)
 	}
-	return gen.LoadConfig(*configPath)
+	return gen.ConfigFromYAML(*configPath)
 }

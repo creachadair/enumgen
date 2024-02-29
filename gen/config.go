@@ -15,18 +15,6 @@ import (
 	yaml "gopkg.in/yaml.v3"
 )
 
-// LoadConfig reads and parses a YAML configuration from path.
-//
-// If the filename of path ends in ".go", it calls ConfigFromGoFile on the
-// file; otherwise the file must be a standalone YAML file and is parsed by
-// ConfigFromFile.
-func LoadConfig(path string) (*Config, error) {
-	if filepath.Ext(path) == ".go" {
-		return ConfigFromGoFile(path)
-	}
-	return ConfigFromFile(path)
-}
-
 // LoadPackage reads and parses a combined YAML configuration from the Go files
 // stored in the current working directory.
 //
@@ -63,8 +51,8 @@ func LoadPackage() (*Config, error) {
 	return cfg, nil
 }
 
-// ConfigFromFile reads and parses the YAML config file specified by path.
-func ConfigFromFile(path string) (*Config, error) {
+// ConfigFromYAML reads and parses the YAML config file specified by path.
+func ConfigFromYAML(path string) (*Config, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
