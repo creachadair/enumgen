@@ -14,6 +14,22 @@ values:
   - name: Q
 */
 
+/*enumgen:type Size
+
+doc: "A {name} denotes the size of a t-shirt."
+values:
+  - name: Small
+    index: 1
+
+  - name: Medium  # index is 2
+
+  - name: Large
+    index: 4
+
+  - name: XLarge
+    index: 10
+*/
+
 //enumgen:type Color
 // doc: |
 //   A Color is a source of joy for all who behold it.

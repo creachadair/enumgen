@@ -12,14 +12,14 @@ type E1 struct{ _E1 uint8 }
 // Enum returns the name of the enumeration type for E1.
 func (E1) Enum() string { return "E1" }
 
-// Index returns the ordinal index of E1 v.
-func (v E1) Index() int { return int(v._E1) }
-
 // String returns the string representation of E1 v.
 func (v E1) String() string { return _str_E1[v._E1] }
 
 // Valid reports whether v is a valid non-zero E1 value.
 func (v E1) Valid() bool { return v._E1 > 0 && int(v._E1) < len(_str_E1) }
+
+// Index returns the integer index of E1 v.
+func (v E1) Index() int { return int(v._E1) }
 
 var (
 	_str_E1 = []string{"<invalid>", "alpha", "bravo", "C"}
@@ -34,14 +34,14 @@ type E2 struct{ _E2 uint8 }
 // Enum returns the name of the enumeration type for E2.
 func (E2) Enum() string { return "E2" }
 
-// Index returns the ordinal index of E2 v.
-func (v E2) Index() int { return int(v._E2) }
-
 // String returns the string representation of E2 v.
 func (v E2) String() string { return _str_E2[v._E2] }
 
 // Valid reports whether v is a valid non-zero E2 value.
 func (v E2) Valid() bool { return v._E2 > 0 && int(v._E2) < len(_str_E2) }
+
+// Index returns the integer index of E2 v.
+func (v E2) Index() int { return int(v._E2) }
 
 var (
 	_str_E2 = []string{"<invalid>", "A", "B"}
@@ -56,14 +56,14 @@ type E3 struct{ _E3 uint8 }
 // Enum returns the name of the enumeration type for E3.
 func (E3) Enum() string { return "E3" }
 
-// Index returns the ordinal index of E3 v.
-func (v E3) Index() int { return int(v._E3) }
-
 // String returns the string representation of E3 v.
 func (v E3) String() string { return _str_E3[v._E3] }
 
 // Valid reports whether v is a valid non-zero E3 value.
 func (v E3) Valid() bool { return v._E3 > 0 && int(v._E3) < len(_str_E3) }
+
+// Index returns the integer index of E3 v.
+func (v E3) Index() int { return int(v._E3) }
 
 // newE3 returns the first enumerator of E3 whose string is a
 // case-insensitive match for s. If no enumerator matches, it returns the
@@ -122,14 +122,14 @@ type Count struct{ _Count uint8 }
 // Enum returns the name of the enumeration type for Count.
 func (Count) Enum() string { return "Count" }
 
-// Index returns the ordinal index of Count v.
-func (v Count) Index() int { return int(v._Count) }
-
 // String returns the string representation of Count v.
 func (v Count) String() string { return _str_Count[v._Count] }
 
 // Valid reports whether v is a valid non-zero Count value.
 func (v Count) Valid() bool { return v._Count > 0 && int(v._Count) < len(_str_Count) }
+
+// Index returns the integer index of Count v.
+func (v Count) Index() int { return int(v._Count) }
 
 var (
 	_str_Count = []string{"zilch", "lonely", "tango"}
@@ -141,4 +141,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "78ad4002143764eb12fc06979b6f4607d5859077aed8a1254dcfb2a5e28697cd"
+const GeneratorHash = "7b1a170b309aa415ab8ede8dd49073dd4b8cb74eac2e037ccc42bb640854cf5f"

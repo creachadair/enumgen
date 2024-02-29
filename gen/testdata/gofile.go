@@ -13,14 +13,14 @@ type E4 struct{ _E4 uint8 }
 // Enum returns the name of the enumeration type for E4.
 func (E4) Enum() string { return "E4" }
 
-// Index returns the ordinal index of E4 v.
-func (v E4) Index() int { return int(v._E4) }
-
 // String returns the string representation of E4 v.
 func (v E4) String() string { return _str_E4[v._E4] }
 
 // Valid reports whether v is a valid non-zero E4 value.
 func (v E4) Valid() bool { return v._E4 > 0 && int(v._E4) < len(_str_E4) }
+
+// Index returns the integer index of E4 v.
+func (v E4) Index() int { return int(v._E4) }
 
 var (
 	_str_E4 = []string{"<invalid>", "P", "D", "Q"}
@@ -30,20 +30,45 @@ var (
 	E4_Q = E4{3}
 )
 
+// A {name} denotes the size of a t-shirt.
+type Size struct{ _Size uint8 }
+
+// Enum returns the name of the enumeration type for Size.
+func (Size) Enum() string { return "Size" }
+
+// String returns the string representation of Size v.
+func (v Size) String() string { return _str_Size[v._Size] }
+
+// Valid reports whether v is a valid non-zero Size value.
+func (v Size) Valid() bool { return v._Size > 0 && int(v._Size) < len(_str_Size) }
+
+// Index returns the integer index of Size v.
+func (v Size) Index() int { return _idx_Size[v._Size] }
+
+var (
+	_str_Size = []string{"<invalid>", "Small", "Medium", "Large", "XLarge"}
+	_idx_Size = []int{0, 1, 2, 4, 10}
+
+	Small  = Size{1}
+	Medium = Size{2}
+	Large  = Size{3}
+	XLarge = Size{4}
+)
+
 // A Color is a source of joy for all who behold it.
 type Color struct{ _Color uint8 }
 
 // Enum returns the name of the enumeration type for Color.
 func (Color) Enum() string { return "Color" }
 
-// Index returns the ordinal index of Color v.
-func (v Color) Index() int { return int(v._Color) }
-
 // String returns the string representation of Color v.
 func (v Color) String() string { return _str_Color[v._Color] }
 
 // Valid reports whether v is a valid non-zero Color value.
 func (v Color) Valid() bool { return v._Color > 0 && int(v._Color) < len(_str_Color) }
+
+// Index returns the integer index of Color v.
+func (v Color) Index() int { return int(v._Color) }
 
 // NewColor returns the first enumerator of Color whose string is a
 // case-insensitive match for s. If no enumerator matches, it returns the
