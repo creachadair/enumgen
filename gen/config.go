@@ -28,7 +28,7 @@ func LoadPackage() (*Config, error) {
 	}
 	var cfg *Config
 	for _, de := range des {
-		if filepath.Ext(de.Name()) != ".go" {
+		if filepath.Ext(de.Name()) != ".go" || strings.HasSuffix(de.Name(), "_test.go") {
 			continue
 		}
 		c, err := ConfigFromGoFile(de.Name())
