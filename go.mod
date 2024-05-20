@@ -5,6 +5,6 @@ go 1.21
 toolchain go1.21.0
 
 require (
-	github.com/creachadair/mds v0.14.6
+	github.com/creachadair/mds v0.14.7
 	gopkg.in/yaml.v3 v3.0.1
 )
