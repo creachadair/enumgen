@@ -45,6 +45,7 @@
 //	    val-doc: "text"    # (optional) aggregate documentation for the values
 //
 //	    constructor: true  # construct a New* function to convert strings to enumerators
+//	    from-index: true   # construct a *FromIndex function to convert integers to enumerators
 //	    flag-value: true   # implement the flag.Value interface on this enum
 //	    text-marshal: true # implement the TextMarshaler/Unmarshaler interfaces on this enum
 //
@@ -115,6 +116,9 @@ type Enum struct {
 
 	// If true, generate a New function to convert strings to enumerators.
 	Constructor bool `yaml:"constructor"`
+
+	// If true, generate a FromIndex function to convert integers to enumerators.
+	FromIndex bool `yaml:"from-index"`
 
 	// If true, generate methods to implement flag.Value for the type.
 	FlagValue bool `yaml:"flag-value"`
@@ -276,6 +280,29 @@ func %[2]s(s string) %[1]s {
    return %[1]s{0}
 }
 `, e.Type, parseFunc, strs, base)
+	}
+
+	if e.FromIndex {
+		fmt.Fprintf(w, `
+// %[2]s returns the first enumerator of %[1]s whose index equals v.
+// If no enumerator matches, it returns the zero enumerator.
+func %[2]s(v int) %[1]s {
+  var zero %[1]s
+`, e.Type, fmt.Sprintf("%sFromIndex", e.Type))
+		// If the index is conventional, use the ordinal directly.
+		// Otherwise we need to look it up explicitly.
+		if !setIndex {
+			fmt.Fprintf(w, "if v <= 0 || v >= len(%s) {\n return zero\n }\n", strs)
+			fmt.Fprintf(w, "return %s{%s(v)}\n}\n", e.Type, base)
+		} else {
+			fmt.Fprintln(w, "switch v{")
+			for _, v := range rest {
+				fullName := e.Prefix + v.Name
+				fmt.Fprintf(w, "case %s.Index():\n", fullName)
+				fmt.Fprintf(w, "\treturn %s\n", fullName)
+			}
+			fmt.Fprintln(w, "default:\n return zero\n}\n}")
+		}
 	}
 
 	// If requested, emit flag.Value methods.

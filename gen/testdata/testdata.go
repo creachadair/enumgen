@@ -17,6 +17,7 @@ values:
 /*enumgen:type Size
 
 doc: "A {name} denotes the size of a t-shirt."
+from-index: true
 values:
   - name: Small
     index: 1

@@ -45,6 +45,24 @@ func (v Size) Valid() bool { return v._Size > 0 && int(v._Size) < len(_str_Size)
 // Index returns the integer index of Size v.
 func (v Size) Index() int { return _idx_Size[v._Size] }
 
+// SizeFromIndex returns the first enumerator of Size whose index equals v.
+// If no enumerator matches, it returns the zero enumerator.
+func SizeFromIndex(v int) Size {
+	var zero Size
+	switch v {
+	case Small.Index():
+		return Small
+	case Medium.Index():
+		return Medium
+	case Large.Index():
+		return Large
+	case XLarge.Index():
+		return XLarge
+	default:
+		return zero
+	}
+}
+
 var (
 	_str_Size = []string{"<invalid>", "Small", "Medium", "Large", "XLarge"}
 	_idx_Size = []int{0, 1, 2, 4, 10}

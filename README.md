@@ -83,6 +83,8 @@ There are also some optional components that are generated on request:
 
 - If `constructor` is true, a `New<Name>` constructor is generated.
 
+- If `from-index` is true, a `<Name>FromIndex` constructor is generated.
+
 - If `flag-value` is true, the type satisfies the `flag.Value` interface.
 
 - If `text-marshal` is true, the type satisfies the `encoding.TextMarshaler`
@@ -106,6 +108,7 @@ enum:                  # a list of enumeration types to generate
     val-doc: "text"    # (optional) aggregate documentation for the values
 
     constructor: true  # construct a New* function to convert strings to enumerators
+    from-index: true   # construct a *FromIndex function to convert integers to enumerators
     flag-value: true   # implement the flag.Value interface on this enum
     text-marshal: true # implement the TextMarshaler/Unmarshaler interfaces on this enum
 

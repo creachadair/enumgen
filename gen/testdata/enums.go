@@ -77,6 +77,16 @@ func newE3(s string) E3 {
 	return E3{0}
 }
 
+// E3FromIndex returns the first enumerator of E3 whose index equals v.
+// If no enumerator matches, it returns the zero enumerator.
+func E3FromIndex(v int) E3 {
+	var zero E3
+	if v <= 0 || v >= len(_str_E3) {
+		return zero
+	}
+	return E3{uint8(v)}
+}
+
 // Set implements part of the flag.Value interface for E3.
 // A value must equal the string representation of an enumerator.
 func (v *E3) Set(s string) error {
@@ -141,4 +151,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "5d27fd17ec72237e306a06ee545105ea7923711a2b919d7f6629d60c705ca9bb"
+const GeneratorHash = "000bf82ce1799a01ca82260be52d9f145bf153ebb7a46a75b1baa3d8667415c9"

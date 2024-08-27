@@ -22,6 +22,7 @@ enum:
   - type: E3
     flag-value: true
     text-marshal: true
+    from-index: true
     values:
       - name: X
         text: foo

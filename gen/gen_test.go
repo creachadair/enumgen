@@ -203,6 +203,48 @@ func TestEnums(t *testing.T) {
 		})
 	})
 
+	t.Run("E3FromIndex", func(t *testing.T) {
+		var zero testdata.E3
+		tests := []struct {
+			input int
+			want  testdata.E3
+		}{
+			{0, zero},
+			{1, testdata.X},
+			{2, testdata.Y},
+			{3, zero},
+			{-1, zero},
+		}
+		for _, tc := range tests {
+			if got := testdata.E3FromIndex(tc.input); got != tc.want {
+				t.Errorf("E3FromIndex(%d): got %v, want %v", tc.input, got, tc.want)
+			}
+		}
+	})
+
+	t.Run("SizeFromIndex", func(t *testing.T) {
+		var zero testdata.Size
+		tests := []struct {
+			input int
+			want  testdata.Size
+		}{
+			{0, zero},
+			{1, testdata.Small},
+			{2, testdata.Medium},
+			{3, zero},
+			{4, testdata.Large},
+			{5, zero},
+			{10, testdata.XLarge},
+			{50, zero},
+			{-1, zero},
+		}
+		for _, tc := range tests {
+			if got := testdata.SizeFromIndex(tc.input); got != tc.want {
+				t.Errorf("E3FromIndex(%d): got %v, want %v", tc.input, got, tc.want)
+			}
+		}
+	})
+
 	t.Run("ColorFlag", func(t *testing.T) {
 		const redText = "fire-engine-red"
 		color := testdata.Red
