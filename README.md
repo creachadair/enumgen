@@ -1,6 +1,7 @@
 # enumgen
 
 [![GoDoc](https://img.shields.io/static/v1?label=godoc&message=reference&color=white)](https://pkg.go.dev/github.com/creachadair/enumgen)
+[![CI](https://github.com/creachadair/enumgen/actions/workflows/go-presubmit.yml/badge.svg?event=push&branch=main)](https://github.com/creachadair/enumgen/actions/workflows/go-presubmit.yml)
 
 Program `enumgen` is a command-line tool to generate Go enumeration types.
 
