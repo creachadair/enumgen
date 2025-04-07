@@ -62,8 +62,8 @@ func ConfigFromYAML(path string) (*Config, error) {
 }
 
 // ConfigFromGoFile reads and parses the Go file specified by path, and
-// extracts a YAML config from each first comment block tagged enumgen:type
-// found in the file.  An error results if no such comment is found.
+// extracts a YAML config from each comment block tagged enumgen:type found in
+// the file.  An error results if no such comment is found.
 func ConfigFromGoFile(path string) (*Config, error) {
 	src, err := os.ReadFile(path)
 	if err != nil {
