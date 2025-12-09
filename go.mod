@@ -1,9 +1,9 @@
 module github.com/creachadair/enumgen
 
-go 1.24
+go 1.25
 
 require (
-	github.com/creachadair/mds v0.25.13
+	github.com/creachadair/mds v0.25.15
 	gopkg.in/yaml.v3 v3.0.1
 )
 
