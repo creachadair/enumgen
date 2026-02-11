@@ -10,9 +10,6 @@ import (
 // An enumeration defined in a Go file.
 type E4 struct{ _E4 uint8 }
 
-// Enum returns the name of the enumeration type for E4.
-func (E4) Enum() string { return "E4" }
-
 // String returns the string representation of E4 v.
 func (v E4) String() string { return _str_E4[v._E4] }
 
@@ -32,9 +29,6 @@ var (
 
 // A Size denotes the size of a t-shirt.
 type Size struct{ _Size uint8 }
-
-// Enum returns the name of the enumeration type for Size.
-func (Size) Enum() string { return "Size" }
 
 // String returns the string representation of Size v.
 func (v Size) String() string { return _str_Size[v._Size] }
@@ -75,9 +69,6 @@ var (
 
 // A Color is a source of joy for all who behold it.
 type Color struct{ _Color uint8 }
-
-// Enum returns the name of the enumeration type for Color.
-func (Color) Enum() string { return "Color" }
 
 // String returns the string representation of Color v.
 func (v Color) String() string { return _str_Color[v._Color] }

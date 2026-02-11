@@ -17,7 +17,6 @@ import (
 )
 
 type enumType interface {
-	Enum() string
 	Index() int
 	String() string
 	Valid() bool

@@ -9,9 +9,6 @@ import (
 
 type E1 struct{ _E1 uint8 }
 
-// Enum returns the name of the enumeration type for E1.
-func (E1) Enum() string { return "E1" }
-
 // String returns the string representation of E1 v.
 func (v E1) String() string { return _str_E1[v._E1] }
 
@@ -31,9 +28,6 @@ var (
 
 type E2 struct{ _E2 uint8 }
 
-// Enum returns the name of the enumeration type for E2.
-func (E2) Enum() string { return "E2" }
-
 // String returns the string representation of E2 v.
 func (v E2) String() string { return _str_E2[v._E2] }
 
@@ -52,9 +46,6 @@ var (
 )
 
 type E3 struct{ _E3 uint8 }
-
-// Enum returns the name of the enumeration type for E3.
-func (E3) Enum() string { return "E3" }
 
 // String returns the string representation of E3 v.
 func (v E3) String() string { return _str_E3[v._E3] }
@@ -129,9 +120,6 @@ var (
 
 type Count struct{ _Count uint8 }
 
-// Enum returns the name of the enumeration type for Count.
-func (Count) Enum() string { return "Count" }
-
 // String returns the string representation of Count v.
 func (v Count) String() string { return _str_Count[v._Count] }
 
@@ -151,4 +139,4 @@ var (
 
 // GeneratorHash is used by the tests to verify that the testdata
 // package is updated when the code generator changes.
-const GeneratorHash = "080e5622e6545d8782c5cb2e16072467dd74296780714fd2499d8bc1f82c611a"
+const GeneratorHash = "86c0820448b69d9dec3a197c9c460435b8b09a9d1e6c3f9dad0af79a55637ce2"

@@ -40,9 +40,6 @@ func Example() {
 	// // Example is an example enumeration.
 	// type Example struct{ _Example uint8 }
 	//
-	// // Enum returns the name of the enumeration type for Example.
-	// func (Example) Enum() string { return "Example" }
-	//
 	// // String returns the string representation of Example v.
 	// func (v Example) String() string { return _str_Example[v._Example] }
 	//
