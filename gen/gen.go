@@ -124,6 +124,10 @@ type Enum struct {
 
 	// If true, implement encoding.TextMarshaler for the type.
 	TextMarshal bool `yaml:"text-marshal"`
+
+	// If true, the default text label (the name) is converted to lower-case if
+	// not otherwise specified via the Text field.
+	LowercaseText bool `yaml:"lowercase-text"`
 }
 
 // A Value defines a single enumerator.
@@ -224,10 +228,10 @@ func (e *Enum) generate(w io.Writer) error {
 	// Extract the label strings and indices for the defined enumerators.
 	labels := make([]string, len(rest)+1)
 	indices := make([]int, len(rest)+1)
-	labels[0] = zero.label()
+	labels[0] = zero.label(e.LowercaseText)
 	curIndex, setIndex := 1, false
 	for i, v := range rest {
-		labels[i+1] = v.label()
+		labels[i+1] = v.label(e.LowercaseText)
 		if v.Index != nil {
 			curIndex = *v.Index
 			setIndex = true
@@ -413,11 +417,13 @@ func (e *Enum) extractZero() (zero *Value, rest []*Value) {
 }
 
 // label returns the label string for v.
-func (v *Value) label() string {
+func (v *Value) label(toLower bool) string {
 	if v == nil {
 		return "<invalid>"
 	} else if v.Text != "" {
 		return v.Text
+	} else if toLower {
+		return strings.ToLower(v.Name)
 	}
 	return v.Name
 }

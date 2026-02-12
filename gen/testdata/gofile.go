@@ -27,6 +27,28 @@ var (
 	E4_Q = E4{3}
 )
 
+// Another enumeration defined in a Go file.
+type E5 struct{ _E5 uint8 }
+
+// String returns the string representation of E5 v.
+func (v E5) String() string { return _str_E5[v._E5] }
+
+// Valid reports whether v is a valid non-zero E5 value.
+func (v E5) Valid() bool { return v._E5 > 0 && int(v._E5) < len(_str_E5) }
+
+// Index returns the integer index of E5 v.
+func (v E5) Index() int { return int(v._E5) }
+
+var (
+	_str_E5 = []string{"fruitless", "apple", "pear", "plum", "UNMODIFIED"}
+
+	Unfruited = E5{0}
+	Apple     = E5{1}
+	Pear      = E5{2}
+	Plum      = E5{3}
+	Cherry    = E5{4}
+)
+
 // A Size denotes the size of a t-shirt.
 type Size struct{ _Size uint8 }
 

@@ -14,6 +14,20 @@ values:
   - name: Q
 */
 
+/*enumgen:type E5
+doc: Another enumeration defined in a Go file.
+lowercase-text: true
+zero: Unfruited
+values:
+ - name: Unfruited
+   text: fruitless  # not modified
+ - name: Apple
+ - name: Pear
+ - name: Plum
+ - name: Cherry
+   text: UNMODIFIED # not lowercased
+*/
+
 /*enumgen:type Size
 
 doc: "A {name} denotes the size of a t-shirt."

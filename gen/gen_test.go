@@ -87,6 +87,15 @@ func TestEnums(t *testing.T) {
 		check(t, testdata.E4_Q, true, "Q")
 	})
 
+	t.Run("E5", func(t *testing.T) {
+		var zero testdata.E5
+		check(t, zero, false, "fruitless")
+		check(t, testdata.Apple, true, "apple")
+		check(t, testdata.Pear, true, "pear")
+		check(t, testdata.Plum, true, "plum")
+		check(t, testdata.Cherry, true, "UNMODIFIED")
+	})
+
 	t.Run("Count", func(t *testing.T) {
 		var zero testdata.Count
 		check(t, zero, false, "zilch")
