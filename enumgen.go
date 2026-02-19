@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	configPath = flag.String("config", "", "Configuration file path")
+	configPath = flag.String("config", "", "Configuration file path (if empty, use Go files in $PWD)")
 	outputPath = flag.String("output", "", "Output file path (required)")
 )
 
