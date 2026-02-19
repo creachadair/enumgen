@@ -242,7 +242,7 @@ func (e *Enum) generate(w io.Writer) error {
 	strs := fmt.Sprintf("_str_%s", e.Type)
 	idxs := fmt.Sprintf("_idx_%s", e.Type)
 
-	// Generate the Enum, String, and Valid methods.
+	// Generate the String and Valid methods.
 	fmt.Fprintf(w, `
 // String returns the string representation of %[1]s v.
 func (v %[1]s) String() string { return %[3]s[v.%[2]s] }

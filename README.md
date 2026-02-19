@@ -63,9 +63,7 @@ value comparisons, enumerators can be used as map keys, and users of the type
 outside the package cannot create new non-zero values of the type. The zero
 value is explicitly defined as the "unknown" value for an enumeration.
 
-The generated type exports four methods:
-
-- The `Enum` method returns the name of the generated type.
+Every generated type exports the following methods:
 
 - The `Index` method returns an integer index of the enumerator. By default,
   the index is the 1-based ordinal position of the enumerator within the values
@@ -73,7 +71,8 @@ The generated type exports four methods:
   integer value. Enumerators without an explicit `index` are given an index one
   greater than the index of their predecessor.
 
-  If an explicit zero enumerator is defined, its index cannot be replaced.
+  The zero value of an enumerator has index 0, and that value cannot be
+  overridden even if an explicit zero enumerator is defined.
 
 - The `Valid` method reports whether an enumerator is valid (non-zero).
 
