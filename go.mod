@@ -3,7 +3,7 @@ module github.com/creachadair/enumgen
 go 1.25.0
 
 require (
-	github.com/creachadair/mds v0.27.1
+	github.com/creachadair/mds v0.27.2
 	gopkg.in/yaml.v3 v3.0.1
 )
 
