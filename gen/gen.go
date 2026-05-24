@@ -58,6 +58,7 @@
 //	      - name: C
 //
 //	  - type: "Other"
+//	    lowercase-text: true  # default enumerator strings to lowercase
 //	    values:
 //	      - name: X
 //	      - name: Y
