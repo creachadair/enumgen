@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/creachadair/mds/mapset"
+	"github.com/creachadair/mds/mstr"
 	yaml "gopkg.in/yaml.v3"
 )
 
@@ -199,7 +200,7 @@ func (c *Config) checkValid() error {
 func indentLines(pfx string, text []string) string {
 	var lines []string
 	for _, t := range text {
-		lines = append(lines, strings.Split(strings.TrimSuffix(t, "\n"), "\n")...)
+		lines = append(lines, mstr.Lines(t)...)
 	}
 	for i := range lines {
 		lines[i] = pfx + lines[i]
