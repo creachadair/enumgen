@@ -26,6 +26,8 @@ values:
  - name: Plum
  - name: Cherry
    text: UNMODIFIED # not lowercased
+ - name: Quince
+   text: Quince # not lowercased
 */
 
 /*enumgen:type Size

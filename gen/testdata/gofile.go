@@ -40,13 +40,14 @@ func (v E5) Valid() bool { return v._E5 > 0 && int(v._E5) < len(_str_E5) }
 func (v E5) Index() int { return int(v._E5) }
 
 var (
-	_str_E5 = []string{"fruitless", "apple", "pear", "plum", "UNMODIFIED"}
+	_str_E5 = []string{"fruitless", "apple", "pear", "plum", "UNMODIFIED", "Quince"}
 
 	Unfruited = E5{0}
 	Apple     = E5{1}
 	Pear      = E5{2}
 	Plum      = E5{3}
 	Cherry    = E5{4}
+	Quince    = E5{5}
 )
 
 // A Size denotes the size of a t-shirt.

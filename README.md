@@ -90,6 +90,11 @@ There are also some optional components that are generated on request:
 - If `text-marshal` is true, the type satisfies the `encoding.TextMarshaler`
   and `encoding.TextUnmarshaler` interfaces.
 
+By default, unless overridden by `text`, the string representation of an
+enumerator is its `name` field as-written. Setting the `lowercase-text` option
+to true causes the default to be converted to all-lowercase. This does not
+affect any enumerator where the text is explicitly given.
+
 ## Configuration
 
 The [`gen.Config`][gc] type defines a set of enumerations to generate in a
